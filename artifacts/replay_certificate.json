@@ -1,0 +1,24 @@
+{
+  "replay_version": "v1",
+  "git_commit": "unknown",
+  "scenario_profile": "supply_chain_flash_crisis",
+  "prompt_versions": {
+    "source": "v1",
+    "vision": "v1",
+    "timeline": "v1",
+    "contradiction": "v1",
+    "prediction": "v1",
+    "consensus": "v1"
+  },
+  "specialist_versions": {
+    "source": "1.0",
+    "vision": "1.0",
+    "timeline": "1.0",
+    "contradiction": "1.0",
+    "prediction": "1.0",
+    "consensus": "1.0"
+  },
+  "events_sha256": "3b7cb09d28cb8aa83736ce844729e4d4d15aebd19ce0f41c0c1dbe40abd912c8",
+  "generation_timestamp": "2026-06-28T19:46:18.022959Z",
+  "validated": true
+}
