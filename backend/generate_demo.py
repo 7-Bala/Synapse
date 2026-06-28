@@ -8,13 +8,11 @@ from datetime import datetime
 from unittest.mock import MagicMock
 
 from agents.source import SourceAgent
-from agents.stub_agents import (
-    create_consensus_agent,
-)
 from agents.timeline import TimelineAgent
 from agents.vision import VisionAgent
 from agents.consistency import ConsistencyAgent
 from agents.simulation import ScenarioSimulationAgent
+from agents.consensus import ConsensusAgent
 from core.agent_registry import AgentRegistry
 from core.orchestrator import Orchestrator
 from core.pipeline_state import PipelineState
@@ -47,6 +45,8 @@ class MockCerebrasResponse:
                 specialist_name = "ContradictionAgent"
             elif "Scenario Simulation Specialist" in sys_msg:
                 specialist_name = "PredictionAgent"
+            elif "Consensus Arbitration Engine" in sys_msg:
+                specialist_name = "ConsensusAgent"
 
         # We can extract simplistic info to vary the response
         self.tick_count += 1
@@ -196,7 +196,15 @@ async def main() -> None:
     )
     register_and_wrap(real_simulation_agent)
 
-    register_and_wrap(create_consensus_agent())
+    real_consensus_agent = ConsensusAgent(
+        name="ConsensusAgent",
+        prompt_version="v1",
+        prompt_loader=prompt_loader,
+        cerebras_service=cerebras_service,
+        cache_manager=cache_manager,
+        pipeline_state=pipeline_state,
+    )
+    register_and_wrap(real_consensus_agent)
 
     real_source_agent = SourceAgent(
         name="SourceAgent",
