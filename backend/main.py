@@ -99,23 +99,19 @@ async def main() -> None:
     player.load_scenario(scenario_path)
 
     # 5. Execute Playback
-    print("\n--- Loading Profile: Supply_Chain_Flash_Crisis ---")
+    print("\n--- Running Deterministic Simulation: Supply_Chain_Flash_Crisis ---")
 
     # Run the player (await until completion)
     player.set_speed(10.0)  # Speed it up for tests
     await player.play()
 
-    # 6. Output Results
-    print("\n--- Final Arbitration Timeline ---")
-    for update in recorder.decision_timeline:
-        print(
-            f"\nEvidence Cycle {update['evidence_cycle']}: {update['decision']} (Conf: {update['confidence']:.2f}, HR Required: {update['human_review_required']})"
-        )
-        print("  [Downstream Systems]:")
-        for sys in update["downstream_systems"]:
-            print(f"    - {sys['system']}: {sys['status']}")
-
-    print(f"\nTotal Chronological Events Recorded: {len(recorder.events)}")
+    # 6. Export Event Log
+    events_path = os.path.join(
+        os.path.dirname(os.path.dirname(__file__)), "events.json"
+    )
+    recorder.export_timeline(events_path)
+    print(f"\nSuccessfully generated deterministic event timeline: {events_path}")
+    print(f"Total exported events: {len(recorder.events)}\n")
 
 
 if __name__ == "__main__":
