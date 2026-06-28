@@ -42,12 +42,15 @@ class EvidencePlayer:
         Note: The orchestrator's agents must have been wrapped in RecordingAgentWrapper
         to capture agent-level completion events chronologically.
         """
+        from demo.downstream import DownstreamSystemSimulator
+
         self.orchestrator = orchestrator
         self.recorder = recorder
+        self.downstream_simulator = DownstreamSystemSimulator()
         self._scenario: Dict[str, Any] = {}
         self._is_paused = False
         self._speed = 1.0
-        self._current_tick_idx = 0
+        self._current_cycle_idx = 0
 
     def load_scenario(self, filepath: str) -> None:
         """Loads a JSON scenario file."""
@@ -67,21 +70,21 @@ class EvidencePlayer:
         self._is_paused = False
 
     def restart(self) -> None:
-        """Restarts the playback from tick 1."""
-        self._current_tick_idx = 0
+        """Restarts the playback from cycle 1."""
+        self._current_cycle_idx = 0
         self._is_paused = False
 
     async def play(self) -> None:
         """Executes the loaded scenario."""
         ticks = self._scenario.get("ticks", [])
 
-        while self._current_tick_idx < len(ticks):
+        while self._current_cycle_idx < len(ticks):
             if self._is_paused:
                 await asyncio.sleep(0.5)
                 continue
 
-            tick_data = ticks[self._current_tick_idx]
-            tick_id = tick_data["tick_id"]
+            tick_data = ticks[self._current_cycle_idx]
+            cycle_id = tick_data["tick_id"]
 
             # 1. Parse and build evidence
             evidences = []
@@ -92,15 +95,22 @@ class EvidencePlayer:
                 evidences.append(ev)
 
             # 2. Record arrival
-            self.recorder.record_evidence_arrival(tick_id, evidences)
+            self.recorder.record_evidence_arrival(cycle_id, evidences)
 
             # 3. Process through orchestrator (this triggers agent completions)
             consensus = await self.orchestrator.process_evidence(evidences)
 
-            # 4. Record consensus update
-            self.recorder.record_consensus_update(tick_id, consensus)
+            # 4. Simulate downstream enterprise systems
+            downstream_states = self.downstream_simulator.process_cycle(
+                cycle_id, consensus
+            )
 
-            self._current_tick_idx += 1
+            # 5. Record consensus update and downstream state
+            self.recorder.record_consensus_update(
+                cycle_id, consensus, downstream_states
+            )
+
+            self._current_cycle_idx += 1
 
             # Simulate real-time gap based on playback speed
             await asyncio.sleep(1.0 / self._speed)
