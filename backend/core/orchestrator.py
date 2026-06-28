@@ -105,27 +105,10 @@ class Orchestrator:
     def _run_consensus(
         self, tick_id: int, agent_outputs: List[AgentOutput]
     ) -> ConsensusOutput:
-        """Runs the consensus logic to determine the final decision.
+        """Runs the consensus logic to determine the final decision."""
+        from core.consensus import run_minimal_consensus
 
-        For Sprint 1, this is a deterministic stub.
-        """
-        # A simple fake consensus based on agent outputs
-        if not agent_outputs:
-            decision = "No agents provided output."
-            confidence = 0.0
-        else:
-            decision = f"Consensus reached among {len(agent_outputs)} agents."
-            # Average confidence of all agents
-            confidence = sum(out.confidence for out in agent_outputs) / len(
-                agent_outputs
-            )
-
-        return ConsensusOutput(
-            decision=decision,
-            confidence=confidence,
-            explanation="Deterministic stub consensus based on successful agent executions.",
-            human_review_required=False,
-        )
+        return run_minimal_consensus(agent_outputs)
 
     def _finalize_tick(self, consensus_output: ConsensusOutput) -> None:
         """Finalizes the tick by updating orchestrator state."""
