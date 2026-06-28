@@ -12,8 +12,8 @@ from agents.stub_agents import (
     create_consensus_agent,
     create_contradiction_agent,
     create_prediction_agent,
-    create_timeline_agent,
 )
+from agents.timeline import TimelineAgent
 from agents.vision import VisionAgent
 from core.agent_registry import AgentRegistry
 from core.orchestrator import Orchestrator
@@ -47,10 +47,10 @@ class MockCerebrasResponse:
         mock_response = MagicMock()
         mock_response.choices = [MagicMock()]
         payload = {
-            "specialist": "VisionAgent",
+            "specialist": "TimelineAgent",
             "status": "COMPLETE",
-            "finding": findings,
-            "reasoning": f"Evidence ledger. {rel}. Entities: [Location -> Condition -> Safe -> High]",
+            "finding": "HIGH - " + findings,
+            "reasoning": f"Evidence ledger. {rel}. Delta Nodes: [Event: Incident -> TS: 12:00 -> Source: Sys -> Conf: High]. Delta Edges: [Supports]. Graph Delta: Added new confirmed start time.",
             "confidence_reason": "official" if conf > 0.8 else "uncertain",
             "citations": ["evidence_1"],
             "prompt_version": "v1",
@@ -150,7 +150,16 @@ async def main() -> None:
     )
     register_and_wrap(real_vision_agent)
 
-    register_and_wrap(create_timeline_agent())
+    real_timeline_agent = TimelineAgent(
+        name="TimelineAgent",
+        prompt_version="v1",
+        prompt_loader=prompt_loader,
+        cerebras_service=cerebras_service,
+        cache_manager=cache_manager,
+        pipeline_state=pipeline_state,
+    )
+    register_and_wrap(real_timeline_agent)
+
     register_and_wrap(create_contradiction_agent())
     register_and_wrap(create_prediction_agent())
     register_and_wrap(create_consensus_agent())
