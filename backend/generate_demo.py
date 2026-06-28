@@ -13,8 +13,8 @@ from agents.stub_agents import (
     create_contradiction_agent,
     create_prediction_agent,
     create_timeline_agent,
-    create_vision_agent,
 )
+from agents.vision import VisionAgent
 from core.agent_registry import AgentRegistry
 from core.orchestrator import Orchestrator
 from core.pipeline_state import PipelineState
@@ -47,13 +47,13 @@ class MockCerebrasResponse:
         mock_response = MagicMock()
         mock_response.choices = [MagicMock()]
         payload = {
-            "specialist": "SourceAgent",
+            "specialist": "VisionAgent",
             "status": "COMPLETE",
             "finding": findings,
-            "reasoning": f"Evidence ledger. Reliable: {rel}",
+            "reasoning": f"Evidence ledger. {rel}. Entities: [Location -> Condition -> Safe -> High]",
             "confidence_reason": "official" if conf > 0.8 else "uncertain",
             "citations": ["evidence_1"],
-            "prompt_version": "v1"
+            "prompt_version": "v1",
         }
         mock_response.choices[0].message.content = json.dumps(payload)
         return mock_response
@@ -140,7 +140,16 @@ async def main() -> None:
         wrapped = RecordingAgentWrapper(agent, recorder)
         registry.register(wrapped)
 
-    register_and_wrap(create_vision_agent())
+    real_vision_agent = VisionAgent(
+        name="VisionAgent",
+        prompt_version="v1",
+        prompt_loader=prompt_loader,
+        cerebras_service=cerebras_service,
+        cache_manager=cache_manager,
+        pipeline_state=pipeline_state,
+    )
+    register_and_wrap(real_vision_agent)
+
     register_and_wrap(create_timeline_agent())
     register_and_wrap(create_contradiction_agent())
     register_and_wrap(create_prediction_agent())
