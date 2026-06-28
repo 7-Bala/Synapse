@@ -5,7 +5,6 @@ import hashlib
 import json
 import os
 from datetime import datetime
-from unittest.mock import MagicMock
 
 from agents.source import SourceAgent
 from agents.timeline import TimelineAgent
@@ -21,59 +20,6 @@ from demo.recorder import DemoRecorder
 from services.cache_manager import CacheManager
 from services.cerebras import CerebrasService
 from services.prompt_loader import PromptLoader
-
-
-class MockCerebrasResponse:
-    """Helper to return dynamic mock responses for the SourceAgent during playback."""
-
-    def __init__(self):
-        self.tick_count = 0
-
-    def mock_create(self, *args, **kwargs):
-        # Extract intended specialist from system message if possible, to make mock dynamic
-        messages = kwargs.get("messages", [])
-        specialist_name = "TimelineAgent"
-        if messages and "system" in messages[0]["role"]:
-            sys_msg = messages[0]["content"]
-            if "Vision Specialist" in sys_msg:
-                specialist_name = "VisionAgent"
-            elif "Timeline Specialist" in sys_msg:
-                specialist_name = "TimelineAgent"
-            elif "Source Specialist" in sys_msg:
-                specialist_name = "SourceAgent"
-            elif "Consistency Specialist" in sys_msg:
-                specialist_name = "ContradictionAgent"
-            elif "Scenario Simulation Specialist" in sys_msg:
-                specialist_name = "PredictionAgent"
-            elif "Consensus Arbitration Engine" in sys_msg:
-                specialist_name = "ConsensusAgent"
-
-        # We can extract simplistic info to vary the response
-        self.tick_count += 1
-        if self.tick_count == 1:
-            findings, conf, rel = "Unverified incident report.", 0.4, "false"
-        elif self.tick_count == 2:
-            findings, conf, rel = "Unverified anonymous image.", 0.60, "false"
-        elif self.tick_count == 3:
-            findings, conf, rel = "Social media rumors causing concern.", 0.65, "false"
-        elif self.tick_count == 4:
-            findings, conf, rel = "Verified official incident report.", 0.85, "true"
-        else:
-            findings, conf, rel = "Source is a verified system sensor.", 0.95, "true"
-
-        mock_response = MagicMock()
-        mock_response.choices = [MagicMock()]
-        payload = {
-            "specialist": specialist_name,
-            "status": "COMPLETE",
-            "finding": "HIGH - " + findings,
-            "reasoning": f"Evidence ledger. {rel}. Delta Nodes: [Event: Incident -> TS: 12:00 -> Source: Sys -> Conf: High]. Delta Edges: [Supports]. Graph Delta: Added new confirmed start time.",
-            "confidence_reason": "official" if conf > 0.8 else "uncertain",
-            "citations": ["evidence_1"],
-            "prompt_version": "v1",
-        }
-        mock_response.choices[0].message.content = json.dumps(payload)
-        return mock_response
 
 
 def get_next_version(artifacts_dir: str, prefix: str) -> int:
@@ -146,9 +92,8 @@ async def main() -> None:
     # Initialize Pipeline State
     pipeline_state = PipelineState(scenario_name="supply_chain_flash_crisis")
 
-    # MOCK CEREBRAS
-    mock_engine = MockCerebrasResponse()
-    cerebras_service._client.chat.completions.create = mock_engine.mock_create  # type: ignore[method-assign]
+    # TODO: System currently runs in dry/failed mode without CEREBRAS_API_KEY
+    # We no longer mock Cerebras responses in production.
 
     recorder = DemoRecorder()
     registry = AgentRegistry()

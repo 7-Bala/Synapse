@@ -7,7 +7,11 @@ from services.structured_output import StructuredOutputValidator
 class TestConsensusPrompt(unittest.TestCase):
     def validate_mock(self, mock_response: str) -> bool:
         parsed = StructuredOutputValidator.validate(mock_response, LiveSpecialistOutput)
-        return parsed is not None and parsed.status.value in ["COMPLETE", "UNCERTAIN"]
+        return parsed is not None and parsed.status.value in [
+            "COMPLETE",
+            "UNCERTAIN",
+            "FAILED",
+        ]
 
     def test_unanimous_agreement(self):
         mock_response = """{

@@ -104,21 +104,27 @@ class LiveBaseSpecialist(BaseAgent):
 
         # 3. Call Cerebras
         self._latency_tracker.start("llm")
-        # In a real app we'd await an async call. Here Cerebras is synchronous wrapper for now,
-        # but normally we'd run in an executor if it blocks.
-        raw_response = self._cerebras_service.generate_structured_response(
-            messages=messages, response_format={"type": "json_object"}
-        )
-        llm_latency = self._latency_tracker.stop("llm")
+        try:
+            raw_response = self._cerebras_service.generate_structured_response(
+                messages=messages, response_format={"type": "json_object"}
+            )
+            llm_latency = self._latency_tracker.stop("llm")
+        except Exception:
+            raw_response = None
+            llm_latency = self._latency_tracker.stop("llm")
 
         # 4. Validate Structured Output
-        parsed = StructuredOutputValidator.validate(raw_response, self._get_schema())
+        parsed = None
+        if raw_response:
+            parsed = StructuredOutputValidator.validate(
+                raw_response, self._get_schema()
+            )
 
         total_latency = self._latency_tracker.stop("total")
         finished_at = datetime.utcnow().isoformat() + "Z"
 
         if not parsed:
-            # Fallback to uncertain
+            # Fallback to FAILED (Execution/Parsing Failure)
             metrics = SpecialistMetrics(
                 specialist=self.name,
                 started_at=started_at,
@@ -127,7 +133,7 @@ class LiveBaseSpecialist(BaseAgent):
                 tokens_in=0,  # Could pull from API response if accessible
                 tokens_out=0,
                 cache_hit=False,
-                status=SpecialistStatus.UNCERTAIN.value,
+                status=SpecialistStatus.FAILED.value,
             )
             self._pipeline_state.metrics.setdefault(str(context.tick_id), []).append(
                 metrics
@@ -137,7 +143,7 @@ class LiveBaseSpecialist(BaseAgent):
             return AgentOutput(
                 agent_name=self.name,
                 confidence=0.0,
-                findings="Validation failed. Output uncertain.",
+                findings="Execution failed. Platform health issue.",
             )
 
         # 5. Overwrite tracking fields on parsed

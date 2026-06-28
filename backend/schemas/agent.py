@@ -33,6 +33,7 @@ class SpecialistStatus(str, Enum):
 
     COMPLETE = "COMPLETE"
     UNCERTAIN = "UNCERTAIN"
+    FAILED = "FAILED"
 
 
 class LiveSpecialistOutput(BaseModel):

@@ -33,13 +33,30 @@ class ConsensusAgent(LiveBaseSpecialist):
             if cached:
                 outputs[sp] = cached
             else:
-                outputs[sp] = {"status": "UNCERTAIN", "finding": "Missing or failed."}
+                outputs[sp] = {
+                    "status": "FAILED",
+                    "finding": "Execution failed. Platform health issue.",
+                }
         return outputs
 
     def _compute_deterministic_state(self, outputs: Dict[str, Any]) -> Dict[str, Any]:
         """Applies deterministic weighting to specialist outputs to reach a decision."""
         # Simple deterministic weighting model
         # Source (0.2), Vision (0.2), Timeline (0.2), Consistency (0.2), Simulation (0.2)
+
+        failed_count = sum(
+            1 for out in outputs.values() if out.get("status") == "FAILED"
+        )
+
+        if failed_count > 0:
+            return {
+                "decision": "SYSTEM_FAILURE",
+                "confidence": 0.0,
+                "human_review_required": False,
+                "dominant_factor": "Platform health issue",
+                "blocking_reason": "Required specialist execution failed",
+                "specialist_breakdown": outputs,
+            }
 
         uncertain_count = sum(
             1 for out in outputs.values() if out.get("status") == "UNCERTAIN"
@@ -81,6 +98,15 @@ class ConsensusAgent(LiveBaseSpecialist):
 
         outputs = self._collect_specialist_outputs(evidence_hash, scenario)
         deterministic_state = self._compute_deterministic_state(outputs)
+
+        # If systemic failure, we don't even need LLM explanation, but we'll instruct it to pass through
+        if deterministic_state.get("decision") == "SYSTEM_FAILURE":
+            return [
+                {
+                    "role": "system",
+                    "content": "You are the Consensus Engine. System failure detected. Output finding: 'Arbitration could not be performed because required specialist execution failed.' Status MUST be 'FAILED'. Reason MUST be 'Platform health issue'.",
+                }
+            ]
 
         prompt_template = self._prompt_loader.load(self.name, self._prompt_version)
         system_prompt = prompt_template.replace(
