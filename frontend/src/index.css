@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-gray-200 font-sans antialiased overflow-hidden;
+  }
+}
+
+.synapse-panel {
+  @apply bg-surface border border-gray-800 rounded-lg p-4;
+}
+
+.synapse-title {
+  @apply text-xs font-semibold tracking-widest text-gray-500 uppercase mb-3;
+}
