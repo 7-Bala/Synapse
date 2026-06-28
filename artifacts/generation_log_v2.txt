@@ -1,0 +1,2 @@
+Generated events_supply_chain_v2.json at 2026-06-28T19:49:49.145136Z
+Total events: 45

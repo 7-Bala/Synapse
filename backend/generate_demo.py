@@ -20,9 +20,9 @@ from core.orchestrator import Orchestrator
 from core.pipeline_state import PipelineState
 from demo.evidence_player import EvidencePlayer, RecordingAgentWrapper
 from demo.recorder import DemoRecorder
-from prompts.base import PromptBuilder
+from services.cache_manager import CacheManager
 from services.cerebras import CerebrasService
-from validators.response_validator import ResponseValidator
+from services.prompt_loader import PromptLoader
 
 
 class MockCerebrasResponse:
@@ -46,9 +46,16 @@ class MockCerebrasResponse:
 
         mock_response = MagicMock()
         mock_response.choices = [MagicMock()]
-        mock_response.choices[0].message.content = (
-            f'{{"findings": "{findings}", "confidence": {conf}, "is_reliable": {rel}}}'
-        )
+        payload = {
+            "specialist": "SourceAgent",
+            "status": "COMPLETE",
+            "finding": findings,
+            "reasoning": f"Evidence ledger. Reliable: {rel}",
+            "confidence_reason": "official" if conf > 0.8 else "uncertain",
+            "citations": ["evidence_1"],
+            "prompt_version": "v1"
+        }
+        mock_response.choices[0].message.content = json.dumps(payload)
         return mock_response
 
 
@@ -108,10 +115,19 @@ def generate_certificate(manifest: dict, events_json_content: str) -> dict:
 
 async def main() -> None:
     """Runs a full generation of the crisis scenario to produce deterministic artifacts."""
-    prompts_dir = os.path.join(os.path.dirname(__file__), "prompts", "system")
-    prompt_builder = PromptBuilder(templates_dir=prompts_dir)
     cerebras_service = CerebrasService()
-    response_validator = ResponseValidator()
+
+    base_dir = os.path.dirname(os.path.dirname(__file__))
+    artifacts_dir = os.path.join(base_dir, "artifacts")
+    cache_dir = os.path.join(base_dir, "cache")
+
+    prompt_loader = PromptLoader(
+        os.path.join(os.path.dirname(__file__), "prompts", "system")
+    )
+    cache_manager = CacheManager(cache_dir)
+
+    # Initialize Pipeline State
+    pipeline_state = PipelineState(scenario_name="supply_chain_flash_crisis")
 
     # MOCK CEREBRAS
     mock_engine = MockCerebrasResponse()
@@ -131,31 +147,26 @@ async def main() -> None:
     register_and_wrap(create_consensus_agent())
 
     real_source_agent = SourceAgent(
-        prompt_builder, cerebras_service, response_validator
+        name="SourceAgent",
+        prompt_version="v1",
+        prompt_loader=prompt_loader,
+        cerebras_service=cerebras_service,
+        cache_manager=cache_manager,
+        pipeline_state=pipeline_state,
     )
     register_and_wrap(real_source_agent)
 
     orchestrator = Orchestrator(agents=registry.get_all_agents())
     player = EvidencePlayer(orchestrator, recorder)
 
-    scenario_path = os.path.join(
-        os.path.dirname(os.path.dirname(__file__)),
-        "demo",
-        "scenarios",
-        "crisis_response.json",
-    )
+    scenario_path = os.path.join(base_dir, "demo", "scenarios", "crisis_response.json")
     player.load_scenario(scenario_path)
-
-    # Initialize Pipeline State
-    pipeline_state = PipelineState(scenario_name="supply_chain_flash_crisis")
 
     print("\n--- Generating Replay: Supply_Chain_Flash_Crisis ---")
     player.set_speed(10.0)
     await player.play()
 
     # Versioning
-    base_dir = os.path.dirname(os.path.dirname(__file__))
-    artifacts_dir = os.path.join(base_dir, "artifacts")
     os.makedirs(artifacts_dir, exist_ok=True)
     os.makedirs(os.path.join(base_dir, "metrics"), exist_ok=True)
 

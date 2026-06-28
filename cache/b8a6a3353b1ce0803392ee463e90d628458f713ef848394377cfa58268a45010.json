@@ -1,0 +1,1 @@
+{"specialist": "SourceAgent", "status": "COMPLETE", "finding": "Verified official incident report.", "reasoning": "Evidence ledger. Reliable: true", "confidence_reason": "official", "citations": ["evidence_1"], "latency_ms": 0, "tokens_in": 0, "tokens_out": 0, "prompt_version": "v1", "cache_hit": false}

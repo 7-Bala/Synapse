@@ -1,6 +1,6 @@
 {
-  "replay_version": "v1",
-  "generation_timestamp": "2026-06-28T19:46:18.022959Z",
+  "replay_version": "v4",
+  "generation_timestamp": "2026-06-28T19:50:36.357518Z",
   "git_commit": "unknown",
   "git_branch": "develop",
   "scenario_profile": "supply_chain_flash_crisis",
