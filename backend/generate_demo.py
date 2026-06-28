@@ -10,11 +10,11 @@ from unittest.mock import MagicMock
 from agents.source import SourceAgent
 from agents.stub_agents import (
     create_consensus_agent,
-    create_contradiction_agent,
     create_prediction_agent,
 )
 from agents.timeline import TimelineAgent
 from agents.vision import VisionAgent
+from agents.consistency import ConsistencyAgent
 from core.agent_registry import AgentRegistry
 from core.orchestrator import Orchestrator
 from core.pipeline_state import PipelineState
@@ -32,9 +32,24 @@ class MockCerebrasResponse:
         self.tick_count = 0
 
     def mock_create(self, *args, **kwargs):
+        # Extract intended specialist from system message if possible, to make mock dynamic
+        messages = kwargs.get("messages", [])
+        specialist_name = "TimelineAgent"
+        if messages and "system" in messages[0]["role"]:
+            sys_msg = messages[0]["content"]
+            if "Vision Specialist" in sys_msg:
+                specialist_name = "VisionAgent"
+            elif "Timeline Specialist" in sys_msg:
+                specialist_name = "TimelineAgent"
+            elif "Source Specialist" in sys_msg:
+                specialist_name = "SourceAgent"
+            elif "Consistency Specialist" in sys_msg:
+                specialist_name = "ContradictionAgent"
+
+        # We can extract simplistic info to vary the response
         self.tick_count += 1
         if self.tick_count == 1:
-            findings, conf, rel = "Unverified anonymous tip.", 0.40, "false"
+            findings, conf, rel = "Unverified incident report.", 0.4, "false"
         elif self.tick_count == 2:
             findings, conf, rel = "Unverified anonymous image.", 0.60, "false"
         elif self.tick_count == 3:
@@ -47,7 +62,7 @@ class MockCerebrasResponse:
         mock_response = MagicMock()
         mock_response.choices = [MagicMock()]
         payload = {
-            "specialist": "TimelineAgent",
+            "specialist": specialist_name,
             "status": "COMPLETE",
             "finding": "HIGH - " + findings,
             "reasoning": f"Evidence ledger. {rel}. Delta Nodes: [Event: Incident -> TS: 12:00 -> Source: Sys -> Conf: High]. Delta Edges: [Supports]. Graph Delta: Added new confirmed start time.",
@@ -159,8 +174,16 @@ async def main() -> None:
         pipeline_state=pipeline_state,
     )
     register_and_wrap(real_timeline_agent)
+    real_consistency_agent = ConsistencyAgent(
+        name="ContradictionAgent",
+        prompt_version="v1",
+        prompt_loader=prompt_loader,
+        cerebras_service=cerebras_service,
+        cache_manager=cache_manager,
+        pipeline_state=pipeline_state,
+    )
+    register_and_wrap(real_consistency_agent)
 
-    register_and_wrap(create_contradiction_agent())
     register_and_wrap(create_prediction_agent())
     register_and_wrap(create_consensus_agent())
 
