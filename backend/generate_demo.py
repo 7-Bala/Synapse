@@ -6,17 +6,11 @@ import json
 import os
 from datetime import datetime
 
-from agents.source import SourceAgent
-from agents.timeline import TimelineAgent
-from agents.vision import VisionAgent
-from agents.consistency import ConsistencyAgent
-from agents.simulation import ScenarioSimulationAgent
-from agents.consensus import ConsensusAgent
-from core.agent_registry import AgentRegistry
 from core.orchestrator import Orchestrator
 from core.pipeline_state import PipelineState
 from demo.evidence_player import EvidencePlayer, RecordingAgentWrapper
 from demo.recorder import DemoRecorder
+from registry.registry import SpecialistRegistry
 from services.cache_manager import CacheManager
 from services.cerebras import CerebrasService
 from services.prompt_loader import PromptLoader
@@ -96,72 +90,23 @@ async def main() -> None:
     # We no longer mock Cerebras responses in production.
 
     recorder = DemoRecorder()
-    registry = AgentRegistry()
 
-    def register_and_wrap(agent):
+    # Initialize the new Explicit Registry
+    registry = SpecialistRegistry(
+        prompt_loader=prompt_loader,
+        cerebras_service=cerebras_service,
+        cache_manager=cache_manager,
+        pipeline_state=pipeline_state,
+    )
+
+    # Wrap specialists for demo recording
+    from agents.base import BaseAgent
+    wrapped_agents: list[BaseAgent] = []
+    for agent in registry.get_all_specialists():
         wrapped = RecordingAgentWrapper(agent, recorder)
-        registry.register(wrapped)
+        wrapped_agents.append(wrapped)
 
-    real_vision_agent = VisionAgent(
-        name="VisionAgent",
-        prompt_version="v1",
-        prompt_loader=prompt_loader,
-        cerebras_service=cerebras_service,
-        cache_manager=cache_manager,
-        pipeline_state=pipeline_state,
-    )
-    register_and_wrap(real_vision_agent)
-
-    real_timeline_agent = TimelineAgent(
-        name="TimelineAgent",
-        prompt_version="v1",
-        prompt_loader=prompt_loader,
-        cerebras_service=cerebras_service,
-        cache_manager=cache_manager,
-        pipeline_state=pipeline_state,
-    )
-    register_and_wrap(real_timeline_agent)
-    real_consistency_agent = ConsistencyAgent(
-        name="ContradictionAgent",
-        prompt_version="v1",
-        prompt_loader=prompt_loader,
-        cerebras_service=cerebras_service,
-        cache_manager=cache_manager,
-        pipeline_state=pipeline_state,
-    )
-    register_and_wrap(real_consistency_agent)
-
-    real_simulation_agent = ScenarioSimulationAgent(
-        name="PredictionAgent",
-        prompt_version="v1",
-        prompt_loader=prompt_loader,
-        cerebras_service=cerebras_service,
-        cache_manager=cache_manager,
-        pipeline_state=pipeline_state,
-    )
-    register_and_wrap(real_simulation_agent)
-
-    real_consensus_agent = ConsensusAgent(
-        name="ConsensusAgent",
-        prompt_version="v1",
-        prompt_loader=prompt_loader,
-        cerebras_service=cerebras_service,
-        cache_manager=cache_manager,
-        pipeline_state=pipeline_state,
-    )
-    register_and_wrap(real_consensus_agent)
-
-    real_source_agent = SourceAgent(
-        name="SourceAgent",
-        prompt_version="v1",
-        prompt_loader=prompt_loader,
-        cerebras_service=cerebras_service,
-        cache_manager=cache_manager,
-        pipeline_state=pipeline_state,
-    )
-    register_and_wrap(real_source_agent)
-
-    orchestrator = Orchestrator(agents=registry.get_all_agents())
+    orchestrator = Orchestrator(agents=wrapped_agents)
     player = EvidencePlayer(orchestrator, recorder)
 
     scenario_path = os.path.join(base_dir, "demo", "scenarios", "crisis_response.json")
