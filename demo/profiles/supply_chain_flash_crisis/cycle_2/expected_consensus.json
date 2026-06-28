@@ -1,0 +1,6 @@
+{
+  "decision": "CRITICAL INCIDENT CONFIRMED - PARTIAL CLOSURE",
+  "confidence": 0.7,
+  "human_review_required": true,
+  "reasoning": "Visual evidence of smoke matches the port authority's confirmation of a pause and emergency services deployment."
+}

@@ -1,0 +1,6 @@
+{
+  "decision": "CONTRADICTION DETECTED - REASSESSING IMPACT",
+  "confidence": 0.4,
+  "human_review_required": true,
+  "reasoning": "Satellite thermal data contradicts the news narrative. The smoke is from an inland fire blowing over the port, not the port itself."
+}
