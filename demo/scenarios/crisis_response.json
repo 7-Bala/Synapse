@@ -1,0 +1,50 @@
+{
+  "name": "Enterprise Crisis Playback (Placeholder)",
+  "ticks": [
+    {
+      "tick_id": 1,
+      "evidence": [
+        {
+          "content": "Official statement claims the system is secure and operating normally.",
+          "source": "Company PR"
+        }
+      ]
+    },
+    {
+      "tick_id": 2,
+      "evidence": [
+        {
+          "content": "Breaking image of a server on fire.",
+          "source": "Anonymous User"
+        }
+      ]
+    },
+    {
+      "tick_id": 3,
+      "evidence": [
+        {
+          "content": "Social media claims massive data breach underway.",
+          "source": "Twitter"
+        }
+      ]
+    },
+    {
+      "tick_id": 4,
+      "evidence": [
+        {
+          "content": "Witness report confirms fire was contained to test lab, no breach.",
+          "source": "Fire Dept"
+        }
+      ]
+    },
+    {
+      "tick_id": 5,
+      "evidence": [
+        {
+          "content": "Correction issued: System is secure, minor hardware failure contained.",
+          "source": "Company PR"
+        }
+      ]
+    }
+  ]
+}

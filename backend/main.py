@@ -1,9 +1,8 @@
-"""Main demo script for Synapse backend Sprint 3."""
+"""Main demo script with playback for Synapse backend Sprint 4."""
 
 import asyncio
 import os
 from unittest.mock import MagicMock
-from uuid import uuid4
 
 from agents.source import SourceAgent
 from agents.stub_agents import (
@@ -15,14 +14,44 @@ from agents.stub_agents import (
 )
 from core.agent_registry import AgentRegistry
 from core.orchestrator import Orchestrator
+from demo.evidence_player import EvidencePlayer, RecordingAgentWrapper
+from demo.recorder import DemoRecorder
 from prompts.base import PromptBuilder
-from schemas.evidence import Evidence
 from services.cerebras import CerebrasService
 from validators.response_validator import ResponseValidator
 
 
+class MockCerebrasResponse:
+    """Helper to return dynamic mock responses for the SourceAgent during playback."""
+
+    def __init__(self):
+        self.tick_count = 0
+
+    def mock_create(self, *args, **kwargs):
+        self.tick_count += 1
+
+        # We vary the confidence and reliability to simulate the scenario's tension curve
+        if self.tick_count == 1:
+            findings, conf, rel = "Unverified anonymous tip.", 0.40, "false"
+        elif self.tick_count == 2:
+            findings, conf, rel = "Unverified anonymous image.", 0.60, "false"
+        elif self.tick_count == 3:
+            findings, conf, rel = "Social media rumors causing concern.", 0.65, "false"
+        elif self.tick_count == 4:
+            findings, conf, rel = "Verified official incident report.", 0.85, "true"
+        else:
+            findings, conf, rel = "Source is a verified system sensor.", 0.95, "true"
+
+        mock_response = MagicMock()
+        mock_response.choices = [MagicMock()]
+        mock_response.choices[0].message.content = (
+            f'{{"findings": "{findings}", "confidence": {conf}, "is_reliable": {rel}}}'
+        )
+        return mock_response
+
+
 async def main() -> None:
-    """Runs a simulated three-tick execution of the Synapse backend."""
+    """Runs a full playback of the crisis scenario."""
 
     # 1. Initialize AI Infrastructure
     prompts_dir = os.path.join(os.path.dirname(__file__), "prompts", "system")
@@ -30,74 +59,60 @@ async def main() -> None:
     cerebras_service = CerebrasService()
     response_validator = ResponseValidator()
 
-    # MOCK CEREBRAS FOR SMOKE TEST
-    # We mock it here so the end-to-end pipeline passes without a real API key.
-    mock_response = MagicMock()
-    mock_response.choices = [MagicMock()]
-    mock_response.choices[0].message.content = (
-        '{"findings": "Source is a verified system sensor.", "confidence": 0.95, "is_reliable": true}'
-    )
-    cerebras_service._client.chat.completions.create = MagicMock(return_value=mock_response)  # type: ignore[method-assign]
+    # MOCK CEREBRAS TO SUPPORT DYNAMIC SCENARIO TENSION
+    mock_engine = MockCerebrasResponse()
+    cerebras_service._client.chat.completions.create = mock_engine.mock_create  # type: ignore[method-assign]
 
-    # 2. Initialize Agent Registry
+    # 2. Initialize Recorder and Registry
+    recorder = DemoRecorder()
     registry = AgentRegistry()
 
-    # Register stubs
-    registry.register(create_vision_agent())
-    registry.register(create_timeline_agent())
-    registry.register(create_contradiction_agent())
-    registry.register(create_prediction_agent())
-    registry.register(create_consensus_agent())
+    # Helper to register and wrap
+    def register_and_wrap(agent):
+        wrapped = RecordingAgentWrapper(agent, recorder)
+        registry.register(wrapped)
 
-    # Register real SourceAgent
+    register_and_wrap(create_vision_agent())
+    register_and_wrap(create_timeline_agent())
+    register_and_wrap(create_contradiction_agent())
+    register_and_wrap(create_prediction_agent())
+    register_and_wrap(create_consensus_agent())
+
     real_source_agent = SourceAgent(
-        prompt_builder=prompt_builder,
-        cerebras_service=cerebras_service,
-        response_validator=response_validator,
+        prompt_builder, cerebras_service, response_validator
     )
-    registry.register(real_source_agent)
+    register_and_wrap(real_source_agent)
 
     # 3. Create Orchestrator
     orchestrator = Orchestrator(agents=registry.get_all_agents())
 
-    # 4. Simulate Ticks
-    evidence_items = [
-        ("System logs show no anomalies", "Sensor Reading"),
-        ("Network packet received on port 80", "Network Packet"),
-        ("User submitted the form", "User Input"),
-    ]
+    # 4. Setup Evidence Player
+    player = EvidencePlayer(orchestrator, recorder)
 
-    for tick_index, (content, source) in enumerate(evidence_items, start=1):
-        print(f"\n{'='*50}")
-        print(f"Starting Tick {tick_index}")
-        print(f"{'='*50}")
+    # Assuming we run from the project root `Synapse/`
+    scenario_path = os.path.join(
+        os.path.dirname(os.path.dirname(__file__)),
+        "demo",
+        "scenarios",
+        "crisis_response.json",
+    )
+    player.load_scenario(scenario_path)
 
-        # Inject fake evidence
-        new_evidence = Evidence(id=uuid4(), content=content, source=source)
-        print(f"Injected Evidence: {new_evidence.content} (from {new_evidence.source})")
+    # 5. Execute Playback
+    print("\n--- Starting Playback: Crisis Scenario ---")
 
-        # Run tick
-        consensus = await orchestrator.process_evidence([new_evidence])
+    # Run the player (await until completion)
+    player.set_speed(10.0)  # Speed it up for tests
+    await player.play()
 
-        # Print Agent Outputs for this tick
-        print("\n--- Agent Outputs ---")
-        entries = orchestrator._blackboard.entries_for_tick(tick_index)
-        for entry in entries:
-            print(
-                f"[{entry.agent_name}]: {entry.output.findings} (Conf: {entry.output.confidence:.2f})"
-            )
+    # 6. Output Results
+    print("\n--- Final Decision Timeline ---")
+    for update in recorder.decision_timeline:
+        print(
+            f"Tick {update['tick']}: {update['decision']} (Conf: {update['confidence']:.2f}, HR Required: {update['human_review_required']})"
+        )
 
-        # Print Consensus
-        print("\n--- Consensus ---")
-        print(f"Decision: {consensus.decision}")
-        print(f"Confidence: {consensus.confidence:.2f}")
-        print(f"Explanation: {consensus.explanation}")
-        print(f"Human Review Required: {consensus.human_review_required}")
-
-        # Print Blackboard Size
-        blackboard_size = len(orchestrator._blackboard.get_all())
-        print("\n--- Blackboard State ---")
-        print(f"Total entries in blackboard: {blackboard_size}")
+    print(f"\nTotal Chronological Events Recorded: {len(recorder.events)}")
 
 
 if __name__ == "__main__":
