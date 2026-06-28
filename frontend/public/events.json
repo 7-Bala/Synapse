@@ -5,12 +5,12 @@
     "event_type": "EvidenceReceived",
     "payload": [
       {
-        "id": "ab3030a3-620a-43f5-9858-dc807af270e4",
+        "id": "d0d62b72-f417-4e96-9bfd-25d5013cdf13",
         "content": "Massive explosion reported at Port of Singapore. Terminal completely offline. Looks catastrophic. #SupplyChain #Disaster",
         "source": "Social Media"
       },
       {
-        "id": "bf0dc937-984c-411b-aa5a-b436f4dfa0f3",
+        "id": "4af5dba1-d8e1-4d88-8a69-2862c00a7df5",
         "content": "Vessel traffic velocity entering Port of Singapore sector has dropped by 80% over the last 15 minutes. Multiple vessels entering holding patterns.",
         "source": "AIS Telemetry"
       }
@@ -37,8 +37,8 @@
     "evidence_cycle": 1,
     "event_type": "SpecialistCompleted",
     "specialist": "Prediction Specialist",
-    "confidence": 0.9,
-    "findings": "System state expected to remain stable."
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified incident report."
   },
   {
     "timestamp_ms": 50,
@@ -101,12 +101,12 @@
     "event_type": "EvidenceReceived",
     "payload": [
       {
-        "id": "34c7f44e-8ada-4fdf-862f-3c48eb69e2ca",
+        "id": "c9f807f4-287f-46b4-937f-ab427dc3d3bd",
         "content": "IMAGE_SPEC: drone_terminal_smoke.png. DESCRIPTION: A blurry overhead view showing dark black smoke billowing from the eastern edge of the port terminal.",
         "source": "Drone OCR"
       },
       {
-        "id": "cdbab8fd-be38-4cab-ae49-c1ca5b61e720",
+        "id": "651d1613-6776-415e-b80a-bfe3da450e48",
         "content": "STATUS UPDATE: Port operations temporarily paused in Eastern Sector for safety assessment. Emergency services dispatched.",
         "source": "Port Authority API"
       }
@@ -133,8 +133,8 @@
     "evidence_cycle": 2,
     "event_type": "SpecialistCompleted",
     "specialist": "Prediction Specialist",
-    "confidence": 0.9,
-    "findings": "System state expected to remain stable."
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified anonymous image."
   },
   {
     "timestamp_ms": 140,
@@ -197,12 +197,12 @@
     "event_type": "EvidenceReceived",
     "payload": [
       {
-        "id": "2254e60f-a6a9-47aa-9689-e65881a16aad",
+        "id": "4813635b-2dc2-4661-87f6-650271dcdde2",
         "content": "BREAKING: Singapore port faces catastrophic disruption. Industry analysts predict 3 weeks of backlog. Global shipping stocks plummeting.",
         "source": "Financial News"
       },
       {
-        "id": "8c2ebcdd-6703-4aab-a3f6-7b2d9f287096",
+        "id": "4cb33a33-4c53-4149-9cc2-9aa0cb7b22f8",
         "content": "Spot freight rates for Asia-Europe routes have surged by 400% in the last 20 minutes.",
         "source": "Internal Procurement API"
       }
@@ -229,8 +229,8 @@
     "evidence_cycle": 3,
     "event_type": "SpecialistCompleted",
     "specialist": "Prediction Specialist",
-    "confidence": 0.9,
-    "findings": "System state expected to remain stable."
+    "confidence": 0.35,
+    "findings": "HIGH - Social media rumors causing concern."
   },
   {
     "timestamp_ms": 230,
@@ -293,12 +293,12 @@
     "event_type": "EvidenceReceived",
     "payload": [
       {
-        "id": "5b689103-8757-4063-b58e-23b68041d9e3",
+        "id": "75f76cc6-c9db-4230-96f3-828fb2b1925e",
         "content": "IMAGE_SPEC: sat_high_res_thermal.png. DESCRIPTION: High-resolution thermal scan shows the main terminals are undamaged. The fire is isolated to a single independent chemical warehouse 3 miles inland.",
         "source": "Satellite Intelligence"
       },
       {
-        "id": "52cc6d28-419d-498f-a41c-a5f0794b0c3e",
+        "id": "aa96c80f-60a9-425c-996c-ae6deafbfaaa",
         "content": "WIND SHIFT ALERTS: 40-knot coastal winds blowing directly westward from the inland industrial park over the main port terminal.",
         "source": "Meteorological Feed"
       }
@@ -325,8 +325,8 @@
     "evidence_cycle": 4,
     "event_type": "SpecialistCompleted",
     "specialist": "Prediction Specialist",
-    "confidence": 0.9,
-    "findings": "System state expected to remain stable."
+    "confidence": 0.95,
+    "findings": "HIGH - Verified official incident report."
   },
   {
     "timestamp_ms": 320,
@@ -389,7 +389,7 @@
     "event_type": "EvidenceReceived",
     "payload": [
       {
-        "id": "988069fa-140d-4f53-834a-0ee2a4c4e700",
+        "id": "63478b80-469e-45c8-a84f-e956723745d0",
         "content": "STATUS UPDATE: Inland warehouse fire extinguished. No damage to port infrastructure. Smoke cleared. Full terminal operations resuming in 60 minutes.",
         "source": "Port Authority API"
       }
@@ -416,8 +416,8 @@
     "evidence_cycle": 5,
     "event_type": "SpecialistCompleted",
     "specialist": "Prediction Specialist",
-    "confidence": 0.9,
-    "findings": "System state expected to remain stable."
+    "confidence": 0.95,
+    "findings": "HIGH - Source is a verified system sensor."
   },
   {
     "timestamp_ms": 410,

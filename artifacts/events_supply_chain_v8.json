@@ -1,0 +1,477 @@
+[
+  {
+    "timestamp_ms": 10,
+    "evidence_cycle": 1,
+    "event_type": "EvidenceReceived",
+    "payload": [
+      {
+        "id": "d0d62b72-f417-4e96-9bfd-25d5013cdf13",
+        "content": "Massive explosion reported at Port of Singapore. Terminal completely offline. Looks catastrophic. #SupplyChain #Disaster",
+        "source": "Social Media"
+      },
+      {
+        "id": "4af5dba1-d8e1-4d88-8a69-2862c00a7df5",
+        "content": "Vessel traffic velocity entering Port of Singapore sector has dropped by 80% over the last 15 minutes. Multiple vessels entering holding patterns.",
+        "source": "AIS Telemetry"
+      }
+    ]
+  },
+  {
+    "timestamp_ms": 20,
+    "evidence_cycle": 1,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Consensus Specialist",
+    "confidence": 0.9,
+    "findings": "All agents agree on the current state."
+  },
+  {
+    "timestamp_ms": 30,
+    "evidence_cycle": 1,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Contradiction Specialist",
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified incident report."
+  },
+  {
+    "timestamp_ms": 40,
+    "evidence_cycle": 1,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Prediction Specialist",
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified incident report."
+  },
+  {
+    "timestamp_ms": 50,
+    "evidence_cycle": 1,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Source Specialist",
+    "confidence": 0.35,
+    "findings": "Unverified anonymous tip."
+  },
+  {
+    "timestamp_ms": 60,
+    "evidence_cycle": 1,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Timeline Specialist",
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified anonymous tip."
+  },
+  {
+    "timestamp_ms": 70,
+    "evidence_cycle": 1,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Vision Specialist",
+    "confidence": 0.35,
+    "findings": "Unverified anonymous tip."
+  },
+  {
+    "timestamp_ms": 80,
+    "evidence_cycle": 1,
+    "event_type": "ConsensusUpdated",
+    "decision": "Evidence Rejected",
+    "confidence": 0.35,
+    "human_review_required": true
+  },
+  {
+    "timestamp_ms": 90,
+    "evidence_cycle": 1,
+    "event_type": "DownstreamSystemsUpdated",
+    "systems": [
+      {
+        "system": "Fuel Procurement",
+        "status": "PANIC BUYING - Spot Market (+400% Markup)"
+      },
+      {
+        "system": "Route Optimizer",
+        "status": "REROUTING - Avoiding Suez Canal (+14 days)"
+      },
+      {
+        "system": "Insurance Pricing",
+        "status": "PREMIUM SURGE - High Risk Zone Triggered"
+      },
+      {
+        "system": "Scheduling Engine",
+        "status": "CASCADE DELAY - Port slots missed"
+      }
+    ]
+  },
+  {
+    "timestamp_ms": 100,
+    "evidence_cycle": 2,
+    "event_type": "EvidenceReceived",
+    "payload": [
+      {
+        "id": "c9f807f4-287f-46b4-937f-ab427dc3d3bd",
+        "content": "IMAGE_SPEC: drone_terminal_smoke.png. DESCRIPTION: A blurry overhead view showing dark black smoke billowing from the eastern edge of the port terminal.",
+        "source": "Drone OCR"
+      },
+      {
+        "id": "651d1613-6776-415e-b80a-bfe3da450e48",
+        "content": "STATUS UPDATE: Port operations temporarily paused in Eastern Sector for safety assessment. Emergency services dispatched.",
+        "source": "Port Authority API"
+      }
+    ]
+  },
+  {
+    "timestamp_ms": 110,
+    "evidence_cycle": 2,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Consensus Specialist",
+    "confidence": 0.9,
+    "findings": "All agents agree on the current state."
+  },
+  {
+    "timestamp_ms": 120,
+    "evidence_cycle": 2,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Contradiction Specialist",
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified anonymous image."
+  },
+  {
+    "timestamp_ms": 130,
+    "evidence_cycle": 2,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Prediction Specialist",
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified anonymous image."
+  },
+  {
+    "timestamp_ms": 140,
+    "evidence_cycle": 2,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Source Specialist",
+    "confidence": 0.35,
+    "findings": "Unverified anonymous image."
+  },
+  {
+    "timestamp_ms": 150,
+    "evidence_cycle": 2,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Timeline Specialist",
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified anonymous image."
+  },
+  {
+    "timestamp_ms": 160,
+    "evidence_cycle": 2,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Vision Specialist",
+    "confidence": 0.35,
+    "findings": "Unverified anonymous image."
+  },
+  {
+    "timestamp_ms": 170,
+    "evidence_cycle": 2,
+    "event_type": "ConsensusUpdated",
+    "decision": "Evidence Rejected",
+    "confidence": 0.35,
+    "human_review_required": true
+  },
+  {
+    "timestamp_ms": 180,
+    "evidence_cycle": 2,
+    "event_type": "DownstreamSystemsUpdated",
+    "systems": [
+      {
+        "system": "Fuel Procurement",
+        "status": "PANIC BUYING - Spot Market (+400% Markup)"
+      },
+      {
+        "system": "Route Optimizer",
+        "status": "REROUTING - Avoiding Suez Canal (+14 days)"
+      },
+      {
+        "system": "Insurance Pricing",
+        "status": "PREMIUM SURGE - High Risk Zone Triggered"
+      },
+      {
+        "system": "Scheduling Engine",
+        "status": "CASCADE DELAY - Port slots missed"
+      }
+    ]
+  },
+  {
+    "timestamp_ms": 190,
+    "evidence_cycle": 3,
+    "event_type": "EvidenceReceived",
+    "payload": [
+      {
+        "id": "4813635b-2dc2-4661-87f6-650271dcdde2",
+        "content": "BREAKING: Singapore port faces catastrophic disruption. Industry analysts predict 3 weeks of backlog. Global shipping stocks plummeting.",
+        "source": "Financial News"
+      },
+      {
+        "id": "4cb33a33-4c53-4149-9cc2-9aa0cb7b22f8",
+        "content": "Spot freight rates for Asia-Europe routes have surged by 400% in the last 20 minutes.",
+        "source": "Internal Procurement API"
+      }
+    ]
+  },
+  {
+    "timestamp_ms": 200,
+    "evidence_cycle": 3,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Consensus Specialist",
+    "confidence": 0.9,
+    "findings": "All agents agree on the current state."
+  },
+  {
+    "timestamp_ms": 210,
+    "evidence_cycle": 3,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Contradiction Specialist",
+    "confidence": 0.35,
+    "findings": "HIGH - Social media rumors causing concern."
+  },
+  {
+    "timestamp_ms": 220,
+    "evidence_cycle": 3,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Prediction Specialist",
+    "confidence": 0.35,
+    "findings": "HIGH - Social media rumors causing concern."
+  },
+  {
+    "timestamp_ms": 230,
+    "evidence_cycle": 3,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Source Specialist",
+    "confidence": 0.35,
+    "findings": "Social media rumors causing concern."
+  },
+  {
+    "timestamp_ms": 240,
+    "evidence_cycle": 3,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Timeline Specialist",
+    "confidence": 0.35,
+    "findings": "HIGH - Social media rumors causing concern."
+  },
+  {
+    "timestamp_ms": 250,
+    "evidence_cycle": 3,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Vision Specialist",
+    "confidence": 0.35,
+    "findings": "Social media rumors causing concern."
+  },
+  {
+    "timestamp_ms": 260,
+    "evidence_cycle": 3,
+    "event_type": "ConsensusUpdated",
+    "decision": "Evidence Rejected",
+    "confidence": 0.35,
+    "human_review_required": true
+  },
+  {
+    "timestamp_ms": 270,
+    "evidence_cycle": 3,
+    "event_type": "DownstreamSystemsUpdated",
+    "systems": [
+      {
+        "system": "Fuel Procurement",
+        "status": "PANIC BUYING - Spot Market (+400% Markup)"
+      },
+      {
+        "system": "Route Optimizer",
+        "status": "REROUTING - Avoiding Suez Canal (+14 days)"
+      },
+      {
+        "system": "Insurance Pricing",
+        "status": "PREMIUM SURGE - High Risk Zone Triggered"
+      },
+      {
+        "system": "Scheduling Engine",
+        "status": "CASCADE DELAY - Port slots missed"
+      }
+    ]
+  },
+  {
+    "timestamp_ms": 280,
+    "evidence_cycle": 4,
+    "event_type": "EvidenceReceived",
+    "payload": [
+      {
+        "id": "75f76cc6-c9db-4230-96f3-828fb2b1925e",
+        "content": "IMAGE_SPEC: sat_high_res_thermal.png. DESCRIPTION: High-resolution thermal scan shows the main terminals are undamaged. The fire is isolated to a single independent chemical warehouse 3 miles inland.",
+        "source": "Satellite Intelligence"
+      },
+      {
+        "id": "aa96c80f-60a9-425c-996c-ae6deafbfaaa",
+        "content": "WIND SHIFT ALERTS: 40-knot coastal winds blowing directly westward from the inland industrial park over the main port terminal.",
+        "source": "Meteorological Feed"
+      }
+    ]
+  },
+  {
+    "timestamp_ms": 290,
+    "evidence_cycle": 4,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Consensus Specialist",
+    "confidence": 0.9,
+    "findings": "All agents agree on the current state."
+  },
+  {
+    "timestamp_ms": 300,
+    "evidence_cycle": 4,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Contradiction Specialist",
+    "confidence": 0.95,
+    "findings": "HIGH - Verified official incident report."
+  },
+  {
+    "timestamp_ms": 310,
+    "evidence_cycle": 4,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Prediction Specialist",
+    "confidence": 0.95,
+    "findings": "HIGH - Verified official incident report."
+  },
+  {
+    "timestamp_ms": 320,
+    "evidence_cycle": 4,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Source Specialist",
+    "confidence": 0.95,
+    "findings": "Verified official incident report."
+  },
+  {
+    "timestamp_ms": 330,
+    "evidence_cycle": 4,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Timeline Specialist",
+    "confidence": 0.95,
+    "findings": "HIGH - Verified official incident report."
+  },
+  {
+    "timestamp_ms": 340,
+    "evidence_cycle": 4,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Vision Specialist",
+    "confidence": 0.95,
+    "findings": "Verified official incident report."
+  },
+  {
+    "timestamp_ms": 350,
+    "evidence_cycle": 4,
+    "event_type": "ConsensusUpdated",
+    "decision": "Evidence Accepted",
+    "confidence": 0.95,
+    "human_review_required": false
+  },
+  {
+    "timestamp_ms": 360,
+    "evidence_cycle": 4,
+    "event_type": "DownstreamSystemsUpdated",
+    "systems": [
+      {
+        "system": "Fuel Procurement",
+        "status": "HALTING SPOT BUYS - Re-evaluating"
+      },
+      {
+        "system": "Route Optimizer",
+        "status": "CANCELING REROUTE - Holding position"
+      },
+      {
+        "system": "Insurance Pricing",
+        "status": "PREMIUM RECALCULATING"
+      },
+      {
+        "system": "Scheduling Engine",
+        "status": "RESCHEDULING - Attempting slot recovery"
+      }
+    ]
+  },
+  {
+    "timestamp_ms": 370,
+    "evidence_cycle": 5,
+    "event_type": "EvidenceReceived",
+    "payload": [
+      {
+        "id": "63478b80-469e-45c8-a84f-e956723745d0",
+        "content": "STATUS UPDATE: Inland warehouse fire extinguished. No damage to port infrastructure. Smoke cleared. Full terminal operations resuming in 60 minutes.",
+        "source": "Port Authority API"
+      }
+    ]
+  },
+  {
+    "timestamp_ms": 380,
+    "evidence_cycle": 5,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Consensus Specialist",
+    "confidence": 0.9,
+    "findings": "All agents agree on the current state."
+  },
+  {
+    "timestamp_ms": 390,
+    "evidence_cycle": 5,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Contradiction Specialist",
+    "confidence": 0.95,
+    "findings": "HIGH - Source is a verified system sensor."
+  },
+  {
+    "timestamp_ms": 400,
+    "evidence_cycle": 5,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Prediction Specialist",
+    "confidence": 0.95,
+    "findings": "HIGH - Source is a verified system sensor."
+  },
+  {
+    "timestamp_ms": 410,
+    "evidence_cycle": 5,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Source Specialist",
+    "confidence": 0.95,
+    "findings": "Source is a verified system sensor."
+  },
+  {
+    "timestamp_ms": 420,
+    "evidence_cycle": 5,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Timeline Specialist",
+    "confidence": 0.95,
+    "findings": "HIGH - Source is a verified system sensor."
+  },
+  {
+    "timestamp_ms": 430,
+    "evidence_cycle": 5,
+    "event_type": "SpecialistCompleted",
+    "specialist": "Vision Specialist",
+    "confidence": 0.95,
+    "findings": "Source is a verified system sensor."
+  },
+  {
+    "timestamp_ms": 440,
+    "evidence_cycle": 5,
+    "event_type": "ConsensusUpdated",
+    "decision": "Evidence Accepted",
+    "confidence": 0.95,
+    "human_review_required": false
+  },
+  {
+    "timestamp_ms": 450,
+    "evidence_cycle": 5,
+    "event_type": "DownstreamSystemsUpdated",
+    "systems": [
+      {
+        "system": "Fuel Procurement",
+        "status": "NOMINAL - Long term contracts active"
+      },
+      {
+        "system": "Route Optimizer",
+        "status": "NOMINAL - Standard routing active"
+      },
+      {
+        "system": "Insurance Pricing",
+        "status": "NOMINAL - Standard risk profile"
+      },
+      {
+        "system": "Scheduling Engine",
+        "status": "NOMINAL - On schedule"
+      }
+    ]
+  }
+]
