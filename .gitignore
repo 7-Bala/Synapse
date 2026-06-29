@@ -1,19 +1,130 @@
-__pycache__/
-*.pyc
-.env
-.venv/
-.vscode/
+# ==============================================================================
+# Synapse .gitignore
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Environment & Operating System
+# ------------------------------------------------------------------------------
 .DS_Store
-node_modules/
-dist/
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+
+# ------------------------------------------------------------------------------
+# 2. IDE & Editor
+# ------------------------------------------------------------------------------
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.fleet/
+
+# ------------------------------------------------------------------------------
+# 3. Python
+# ------------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
 build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+.venv/
+env/
+.env
+.env.*
+!.env.example
+venv.bak/
+env.bak/
+
+# Testing / Type Checking
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 .coverage
-*.log
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.tox/
+nosetests.xml
 
-# Generated runtime state
+# ------------------------------------------------------------------------------
+# 4. Node & Web Frontend (Vite)
+# ------------------------------------------------------------------------------
+node_modules/
+jspm_packages/
+web_modules/
+.npm
+.yarn/
+.eslintcache
+.stylelintcache
+
+# Build outputs
+frontend/dist/
+frontend/build/
+dist-ssr/
+*.tsbuildinfo
+
+# ------------------------------------------------------------------------------
+# 5. Logs & Caches
+# ------------------------------------------------------------------------------
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ------------------------------------------------------------------------------
+# 6. Synapse Specific Generated Artifacts
+# ------------------------------------------------------------------------------
 artifacts/
 cache/
 metrics/
@@ -23,11 +134,7 @@ backend/evaluation_summary.md
 backend/golden_update_report.md
 frontend/public/events.json
 
-# IDE and OS
-.idea/
-Thumbs.db
-
-# Generated
+# Repomix & Repo Exports
 *repomix*.md
 *repomix*.xml
 project-tree.txt
