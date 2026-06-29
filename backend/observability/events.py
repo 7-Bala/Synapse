@@ -42,11 +42,75 @@ class CacheLookupFinished(BaseEvent):
 
 
 class CacheHit(BaseEvent):
-    pass
+    cache_key: str
+    provider: str
+    cache_version: str
+    schema_version: str
+    ttl: int
+    checksum: Optional[str] = None
 
 
 class CacheMiss(BaseEvent):
-    pass
+    cache_key: str
+    provider: str
+    cache_version: str
+    schema_version: str
+    ttl: int
+    checksum: Optional[str] = None
+
+
+class CacheWrite(BaseEvent):
+    cache_key: str
+    provider: str
+    cache_version: str
+    schema_version: str
+    ttl: int
+    checksum: Optional[str] = None
+
+
+class CacheDelete(BaseEvent):
+    cache_key: str
+    provider: str
+    cache_version: str
+    schema_version: str
+    ttl: int
+    checksum: Optional[str] = None
+
+
+class CacheExpired(BaseEvent):
+    cache_key: str
+    provider: str
+    cache_version: str
+    schema_version: str
+    ttl: int
+    checksum: Optional[str] = None
+
+
+class CacheCorrupted(BaseEvent):
+    cache_key: str
+    provider: str
+    cache_version: str
+    schema_version: str
+    ttl: int
+    checksum: Optional[str] = None
+
+
+class CacheRecovered(BaseEvent):
+    cache_key: str
+    provider: str
+    cache_version: str
+    schema_version: str
+    ttl: int
+    checksum: Optional[str] = None
+
+
+class CacheCleanupStarted(BaseEvent):
+    provider: str
+
+
+class CacheCleanupFinished(BaseEvent):
+    provider: str
+    entries_removed: int
 
 
 class ValidationStarted(BaseEvent):

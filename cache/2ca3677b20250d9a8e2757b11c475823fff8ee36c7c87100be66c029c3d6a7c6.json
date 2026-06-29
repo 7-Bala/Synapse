@@ -1,1 +1,0 @@
-{"specialist": "SourceAgent", "status": "COMPLETE", "finding": "Unverified anonymous tip.", "reasoning": "Evidence ledger. Reliable: false", "confidence_reason": "uncertain", "citations": ["evidence_1"], "latency_ms": 0, "tokens_in": 0, "tokens_out": 0, "prompt_version": "v1", "cache_hit": false}

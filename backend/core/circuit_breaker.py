@@ -118,7 +118,8 @@ class CircuitBreaker:
         self.last_transition = current_time
         self.event_bus.emit(
             CircuitOpened(
-                specialist=None, correlation_id=f"cb_{self.dependency_name}_{current_time}",
+                specialist=None,
+                correlation_id=f"cb_{self.dependency_name}_{current_time}",
                 dependency=self.dependency_name,
                 reason=reason,
             )
@@ -132,7 +133,8 @@ class CircuitBreaker:
         self.recovery_attempts += 1
         self.event_bus.emit(
             CircuitHalfOpen(
-                specialist=None, correlation_id=f"cb_{self.dependency_name}_{current_time}",
+                specialist=None,
+                correlation_id=f"cb_{self.dependency_name}_{current_time}",
                 dependency=self.dependency_name,
             )
         )
@@ -144,13 +146,15 @@ class CircuitBreaker:
         self._failure_timestamps.clear()
         self.event_bus.emit(
             CircuitClosed(
-                specialist=None, correlation_id=f"cb_{self.dependency_name}_{current_time}",
+                specialist=None,
+                correlation_id=f"cb_{self.dependency_name}_{current_time}",
                 dependency=self.dependency_name,
             )
         )
         self.event_bus.emit(
             CircuitRecovered(
-                specialist=None, correlation_id=f"cb_{self.dependency_name}_{current_time}",
+                specialist=None,
+                correlation_id=f"cb_{self.dependency_name}_{current_time}",
                 dependency=self.dependency_name,
             )
         )
@@ -169,7 +173,8 @@ class CircuitBreaker:
                     self.blocked_requests += 1
                     self.event_bus.emit(
                         CircuitRejected(
-                            specialist=None, correlation_id=f"cb_{self.dependency_name}_{current_time}",
+                            specialist=None,
+                            correlation_id=f"cb_{self.dependency_name}_{current_time}",
                             dependency=self.dependency_name,
                         )
                     )
@@ -182,7 +187,8 @@ class CircuitBreaker:
                     self.blocked_requests += 1
                     self.event_bus.emit(
                         CircuitRejected(
-                            specialist=None, correlation_id=f"cb_{self.dependency_name}_{current_time}",
+                            specialist=None,
+                            correlation_id=f"cb_{self.dependency_name}_{current_time}",
                             dependency=self.dependency_name,
                         )
                     )
@@ -228,7 +234,8 @@ class CircuitBreaker:
 
             self.event_bus.emit(
                 CircuitFailure(
-                    specialist=None, correlation_id=f"cb_{self.dependency_name}_{current_time}",
+                    specialist=None,
+                    correlation_id=f"cb_{self.dependency_name}_{current_time}",
                     dependency=self.dependency_name,
                     error=str(exception),
                 )

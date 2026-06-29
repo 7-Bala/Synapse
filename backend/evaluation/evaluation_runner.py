@@ -11,7 +11,9 @@ if backend_dir not in sys.path:
 
 from generate_demo import main as generate_demo_main  # noqa: E402
 from evaluation.golden_dataset import GoldenDataset  # noqa: E402
-from evaluation.comparison_engine import (
+
+# noqa: E402
+from evaluation.comparison_engine import (  # noqa: E402
     ExactComparator,
     NumericComparator,
     StructuralComparator,

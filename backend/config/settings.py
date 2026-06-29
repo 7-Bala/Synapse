@@ -27,6 +27,15 @@ class Settings(BaseSettings):
     circuit_breaker_half_open_max_requests: int = 3
     circuit_breaker_half_open_success_threshold: int = 2
 
+    # Cache Hardening (Phase 5)
+    cache_default_ttl: int = 3600
+    cache_specialist_ttl: int = 3600
+    cache_prompt_ttl: int = 86400
+    cache_schema_version: str = "1.0"
+    cache_version: str = "1.0"
+    cache_cleanup_enabled: bool = True
+    cache_cleanup_batch_size: int = 100
+
     # Storage Paths
     base_dir: str = "/Users/bala/Documents/Synapse"
     cache_dir: str = "/Users/bala/Documents/Synapse/.cache"

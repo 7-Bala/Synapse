@@ -15,8 +15,6 @@ from observability.events import (
     LLMRequestFinished,
     CacheLookupStarted,
     CacheLookupFinished,
-    CacheHit,
-    CacheMiss,
     ValidationStarted,
     ValidationFinished,
 )
@@ -107,9 +105,6 @@ class LiveBaseSpecialist(BaseAgent):
         )
 
         if cached_data:
-            self._event_bus.emit(
-                CacheHit(correlation_id=str(context.tick_id), specialist=self.name)
-            )
             self._pipeline_state.completed_specialists.add(self.name)
             confidence = compute_confidence(
                 cached_data["confidence_reason"], cached_data["finding"]
@@ -130,10 +125,6 @@ class LiveBaseSpecialist(BaseAgent):
                 confidence=confidence,
                 findings=cached_data["finding"],
             )
-
-        self._event_bus.emit(
-            CacheMiss(correlation_id=str(context.tick_id), specialist=self.name)
-        )
 
         # 2. Build Request
         messages = self.build_messages(context)
