@@ -28,11 +28,11 @@ export function ExecutionInspector() {
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-muted">Latency</span>
-                      <span className="text-xs font-mono text-muted">-- ms</span>
+                      <span className="text-xs font-mono text-muted">Waiting for Runtime Telemetry.</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-muted">Token Usage</span>
-                      <span className="text-xs font-mono text-muted">--</span>
+                      <span className="text-xs text-muted">Tokens</span>
+                      <span className="text-xs font-mono text-muted">Waiting for Telemetry Stream.</span>
                     </div>
                   </Stack>
                 </Panel>
@@ -40,8 +40,8 @@ export function ExecutionInspector() {
                 <Panel padding="sm" className="border-border-subtle">
                   <Stack gap={2}>
                     <span className="text-xs text-muted">Reasoning</span>
-                    <span className="text-2xs text-foreground/80 italic font-mono">
-                      (Reasoning trace not yet available for this node)
+                    <span className="text-2xs text-muted font-mono italic">
+                      Waiting for Agent Reasoning Stream.
                     </span>
                   </Stack>
                 </Panel>
@@ -49,8 +49,8 @@ export function ExecutionInspector() {
                 <Panel padding="sm" className="border-border-subtle">
                   <Stack gap={2}>
                     <span className="text-xs text-muted">Prompt</span>
-                    <span className="text-2xs text-foreground/80 italic font-mono">
-                      (Prompt data placeholder)
+                    <span className="text-2xs text-muted font-mono italic">
+                      Waiting for Prompt Telemetry Pipeline.
                     </span>
                   </Stack>
                 </Panel>
@@ -58,15 +58,16 @@ export function ExecutionInspector() {
                 <Panel padding="sm" className="border-border-subtle">
                   <Stack gap={2}>
                     <span className="text-xs text-muted">Evidence References</span>
-                    <span className="text-2xs text-foreground/80 italic font-mono">
-                      (No evidence attached)
+                    <span className="text-2xs text-muted font-mono italic">
+                      Waiting for Evidence Pipeline.
                     </span>
                   </Stack>
                 </Panel>
               </Stack>
             ) : (
-              <div className="text-2xs text-muted italic p-4 text-center">
-                Select a node to inspect its execution trace.
+              <div className="flex flex-col items-center justify-center h-48 text-center text-muted">
+                <p className="text-sm">No node selected.</p>
+                <p className="text-xs mt-1">Select an agent node in the topology to inspect its runtime state.</p>
               </div>
             )}
           </Section>

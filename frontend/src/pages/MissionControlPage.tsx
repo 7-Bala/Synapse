@@ -8,7 +8,7 @@ import { ConnectionStatusPanel } from '@/components/mission-control/ConnectionSt
 import { useExecutionStore } from '@/stores/executionStore';
 
 export function MissionControlPage() {
-  const { isConnected } = useExecutionStore();
+  const { isConnected, events } = useExecutionStore();
 
   return (
     <WorkspaceLayout
@@ -16,21 +16,56 @@ export function MissionControlPage() {
       description="What is happening right now?"
       state={isConnected ? 'ready' : 'disconnected'}
     >
-      <div className="flex w-full h-full">
-        {/* LEFT: Operations Rail */}
-        <Surface variant="panel" border="strong" className="w-[300px] shrink-0 border-y-0 border-l-0 flex flex-col h-full bg-surface-elevated z-10">
-          <ScrollableArea className="flex-1 p-4">
-            <Stack gap={6}>
-              <OperationsPanel />
-              <ConnectionStatusPanel />
-            </Stack>
-          </ScrollableArea>
-        </Surface>
+      <div className="flex flex-col w-full h-full p-6 gap-6 bg-background-dark">
+        {/* TOP ROW */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 shrink-0">
+          <Surface variant="panel" border="strong" className="bg-surface-elevated overflow-visible">
+            <ConnectionStatusPanel />
+          </Surface>
+          
+          <Surface variant="panel" border="strong" className="bg-surface-elevated col-span-1 lg:col-span-2">
+             <div className="p-4 flex flex-col h-full justify-between">
+                <span className="text-sm font-medium text-foreground tracking-tight">Active Execution</span>
+                <div className="text-xs text-muted mt-2">
+                   {events.length > 0 ? "Tracking live runtime metrics." : "No orchestrations currently active. Ready for instructions."}
+                </div>
+             </div>
+          </Surface>
 
-        {/* RIGHT: Live Event Stream */}
-        <div className="flex-1 p-6 h-full">
+          <Surface variant="panel" border="strong" className="bg-surface-elevated">
+            <div className="p-4 h-full">
+               <OperationsPanel />
+            </div>
+          </Surface>
+        </div>
+
+        {/* MIDDLE ROW */}
+        <div className="flex-1 min-h-[300px] border border-border-strong rounded-lg overflow-hidden">
           <LiveEventStream />
         </div>
+
+        {/* BOTTOM ROW */}
+        <Surface variant="panel" border="strong" className="shrink-0 h-[200px] bg-surface-elevated">
+           <div className="p-4 flex flex-col h-full">
+              <span className="text-sm font-medium text-foreground tracking-tight mb-4">Recent Runtime Activity</span>
+              <ScrollableArea className="flex-1">
+                 {events.length > 0 ? (
+                   <Stack gap={2}>
+                     {events.slice(-5).reverse().map((e, i) => (
+                       <div key={i} className="flex justify-between items-center px-3 py-2 bg-surface border border-border-subtle rounded text-xs">
+                          <span className="text-muted font-mono">{e.timestamp.split('T')[1]?.slice(0,8)}</span>
+                          <span className="font-medium text-foreground">{e.type}</span>
+                       </div>
+                     ))}
+                   </Stack>
+                 ) : (
+                   <div className="flex items-center justify-center h-full text-xs text-muted italic">
+                      Awaiting telemetry from the runtime...
+                   </div>
+                 )}
+              </ScrollableArea>
+           </div>
+        </Surface>
       </div>
     </WorkspaceLayout>
   );

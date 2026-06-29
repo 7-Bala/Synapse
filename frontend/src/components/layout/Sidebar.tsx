@@ -83,14 +83,17 @@ export function WorkspaceDock(_props: WorkspaceDockProps) {
                         >
                           {({ isActive }) => (
                             <>
-                              <div className="flex items-center gap-3">
+                              <div className="flex items-center gap-3 overflow-hidden">
                                 <Icon className="size-4 shrink-0" strokeWidth={1.5} />
                                 <span className="text-sm font-medium truncate">{item.title}</span>
+                                {item.beta && (
+                                  <span className="text-[9px] font-mono uppercase tracking-wider px-1 py-0.5 rounded bg-accent/10 text-accent ml-1 shrink-0">Beta</span>
+                                )}
                               </div>
                               
                               {/* Keyboard Shortcut Display */}
                               {item.shortcut && (
-                                <span className="text-2xs font-mono px-1.5 py-0.5 rounded border border-border-subtle bg-surface text-muted opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span className="text-2xs font-mono px-1.5 py-0.5 rounded border border-border-subtle bg-surface text-muted opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
                                   {item.shortcut}
                                 </span>
                               )}

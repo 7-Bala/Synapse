@@ -8,6 +8,33 @@ import { PlayCircle } from 'lucide-react';
 
 type Tab = 'events' | 'blackboard' | 'evidence' | 'consensus' | 'logs';
 
+function ProfessionalEmptyState({ purpose, owner, truth, sprint }: { purpose: string, owner: string, truth: string, sprint: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center h-full max-w-xl mx-auto text-left">
+      <div className="bg-surface-elevated border border-border-subtle rounded-lg p-6 w-full shadow-sm">
+        <h3 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wider">{purpose}</h3>
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          <div>
+            <div className="text-2xs font-mono text-muted uppercase tracking-wider mb-1">Owner</div>
+            <div className="text-xs text-foreground font-medium">{owner}</div>
+          </div>
+          <div>
+            <div className="text-2xs font-mono text-muted uppercase tracking-wider mb-1">Source of Truth</div>
+            <div className="text-xs text-foreground font-medium">{truth}</div>
+          </div>
+          <div>
+            <div className="text-2xs font-mono text-muted uppercase tracking-wider mb-1">Target Sprint</div>
+            <div className="text-xs text-accent font-medium">{sprint}</div>
+          </div>
+        </div>
+        <p className="text-sm text-muted">
+          This UI surface is currently structurally integrated into the routing layer but awaits backend pipeline finalization.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export function ExecutionsPage() {
   const { isConnected } = useExecutionStore();
   const [activeTab, setActiveTab] = useState<Tab>('events');
@@ -53,7 +80,7 @@ export function ExecutionsPage() {
         </div>
 
         {/* BOTTOM: Workspace Tabs */}
-        <div className="h-[300px] flex flex-col bg-surface-elevated">
+        <div className="h-[300px] flex flex-col bg-surface-elevated shrink-0">
           {/* Tab Header */}
           <div className="flex border-b border-border-subtle bg-surface px-4">
             {tabs.map(tab => (
@@ -80,31 +107,39 @@ export function ExecutionsPage() {
             )}
             
             {activeTab === 'blackboard' && (
-              <div className="flex flex-col items-center justify-center h-full text-muted">
-                <h3 className="text-sm font-medium text-foreground mb-1">Blackboard State</h3>
-                <p className="text-xs max-w-sm text-center">Will display the global, shared memory state of the execution in future sprints.</p>
-              </div>
+              <ProfessionalEmptyState 
+                purpose="Global memory and shared state visualization"
+                owner="Orchestrator Memory Manager"
+                truth="ExecutionStore (Zustand) -> Redis Backend"
+                sprint="Future Sprint"
+              />
             )}
 
             {activeTab === 'evidence' && (
-              <div className="flex flex-col items-center justify-center h-full text-muted">
-                <h3 className="text-sm font-medium text-foreground mb-1">Execution Evidence</h3>
-                <p className="text-xs max-w-sm text-center">Will display files, tool call outputs, and generated artifacts in future sprints.</p>
-              </div>
+              <ProfessionalEmptyState 
+                purpose="Artifact inspection and generated outputs"
+                owner="Evidence Pipeline"
+                truth="Artifact Storage / S3"
+                sprint="Future Sprint"
+              />
             )}
 
             {activeTab === 'consensus' && (
-              <div className="flex flex-col items-center justify-center h-full text-muted">
-                <h3 className="text-sm font-medium text-foreground mb-1">Agent Consensus</h3>
-                <p className="text-xs max-w-sm text-center">Will display committee voting, conflict resolution, and decision traces in future sprints.</p>
-              </div>
+              <ProfessionalEmptyState 
+                purpose="Agent voting and conflict resolution traces"
+                owner="Consensus Engine"
+                truth="Voting Telemetry Stream"
+                sprint="Future Sprint"
+              />
             )}
 
             {activeTab === 'logs' && (
-              <div className="flex flex-col items-center justify-center h-full text-muted">
-                <h3 className="text-sm font-medium text-foreground mb-1">System Logs</h3>
-                <p className="text-xs max-w-sm text-center">Will display raw stdout/stderr and system-level diagnostics in future sprints.</p>
-              </div>
+              <ProfessionalEmptyState 
+                purpose="Raw stdout/stderr and diagnostics"
+                owner="Instrumentation Layer"
+                truth="Elasticsearch / Loki"
+                sprint="Future Sprint"
+              />
             )}
           </div>
         </div>
