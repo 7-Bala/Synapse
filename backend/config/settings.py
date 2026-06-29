@@ -14,6 +14,9 @@ class Settings(BaseSettings):
     # Timeouts & Retries
     llm_timeout_seconds: float = 10.0
     llm_max_retries: int = 3
+    retry_base_delay_ms: float = 1000.0
+    retry_max_delay_ms: float = 10000.0
+    retry_jitter_enabled: bool = True
 
     # Storage Paths
     base_dir: str = "/Users/bala/Documents/Synapse"

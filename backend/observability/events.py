@@ -64,3 +64,31 @@ class ArtifactGenerated(BaseEvent):
 
 class ReplayValidated(BaseEvent):
     success: bool
+
+
+class RetryStarted(BaseEvent):
+    attempt: int
+
+
+class RetryAttempt(BaseEvent):
+    attempt: int
+    delay_ms: float
+    error: str
+    duration_ms: float
+
+
+class RetrySucceeded(BaseEvent):
+    attempt: int
+    duration_ms: float
+
+
+class RetryFailedTerminal(BaseEvent):
+    attempt: int
+    error: str
+    duration_ms: float
+
+
+class RetryExhausted(BaseEvent):
+    attempt: int
+    error: str
+    duration_ms: float
