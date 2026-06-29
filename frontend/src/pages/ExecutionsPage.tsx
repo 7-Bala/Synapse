@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { WorkspaceLayout } from '@/layouts/WorkspaceLayout';
 import { ExecutionGraph } from '@/components/execution/ExecutionGraph';
 import { ExecutionInspector } from '@/components/execution/ExecutionInspector';
-import { LiveEventStream } from '@/components/mission-control/LiveEventStream';
+import { RuntimeEventExplorer } from '@/components/runtime-events/RuntimeEventExplorer';
 import { useExecutionStore } from '@/stores/executionStore';
 import { PlayCircle } from 'lucide-react';
 
@@ -102,7 +102,7 @@ export function ExecutionsPage() {
           <div className="flex-1 overflow-hidden p-4">
             {activeTab === 'events' && (
               <div className="h-full w-full">
-                <LiveEventStream />
+                <RuntimeEventExplorer />
               </div>
             )}
             

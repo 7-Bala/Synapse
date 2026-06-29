@@ -2,7 +2,7 @@ import { WorkspaceLayout } from '@/layouts/WorkspaceLayout';
 import { Surface } from '@/design-system/primitives/Surface';
 import { Stack } from '@/design-system/primitives/Stack';
 import { ScrollableArea } from '@/design-system/primitives/ScrollableArea';
-import { LiveEventStream } from '@/components/mission-control/LiveEventStream';
+import { RuntimeEventExplorer } from '@/components/runtime-events/RuntimeEventExplorer';
 import { OperationsPanel } from '@/components/mission-control/OperationsPanel';
 import { ConnectionStatusPanel } from '@/components/mission-control/ConnectionStatusPanel';
 import { useExecutionStore } from '@/stores/executionStore';
@@ -41,7 +41,7 @@ export function MissionControlPage() {
 
         {/* MIDDLE ROW */}
         <div className="flex-1 min-h-[300px] border border-border-strong rounded-lg overflow-hidden">
-          <LiveEventStream />
+          <RuntimeEventExplorer compact />
         </div>
 
         {/* BOTTOM ROW */}
