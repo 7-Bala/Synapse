@@ -19,6 +19,7 @@ from services.cerebras import CerebrasService
 from services.prompt_loader import PromptLoader
 from observability.event_bus import EventBus
 from observability.metrics_collector import MetricsCollector
+from health.reports import HealthReporter
 
 
 def get_next_version(artifacts_dir: str, prefix: str) -> int:
@@ -53,6 +54,9 @@ async def main() -> None:
     event_bus = EventBus.get_instance()
     metrics_collector = MetricsCollector(output_dir=metrics_dir, event_bus=event_bus)
     event_bus.subscribe(metrics_collector.handle_event)
+    
+    # Initialize reporter early so ResourceMonitor can track events
+    reporter = HealthReporter(artifacts_dir)
 
     provenance = ProvenanceEngine()
 
@@ -198,6 +202,11 @@ async def main() -> None:
     print(f"Total exported events: {temp_recorder_events}")
     print(f"Replay ID: {temp_replay_id}")
     print("Manifest and Certificate created securely.\n")
+
+    # 10. Generate and Archive Health Reports
+    reporter.generate_all_reports()
+    reporter.archive_snapshot()
+    print("Health Monitoring reports generated and archived.")
 
 
 if __name__ == "__main__":

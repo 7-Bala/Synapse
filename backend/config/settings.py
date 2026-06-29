@@ -36,6 +36,14 @@ class Settings(BaseSettings):
     cache_cleanup_enabled: bool = True
     cache_cleanup_batch_size: int = 100
 
+    # Resource Monitoring (Phase 8)
+    resource_cpu_warning: float = 70.0
+    resource_cpu_critical: float = 90.0
+    resource_memory_warning: float = 70.0
+    resource_memory_critical: float = 90.0
+    resource_disk_warning: float = 70.0
+    resource_disk_critical: float = 90.0
+
     # Storage Paths
     base_dir: str = "/Users/bala/Documents/Synapse"
     cache_dir: str = "/Users/bala/Documents/Synapse/.cache"

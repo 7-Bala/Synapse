@@ -21,55 +21,55 @@
     "evidence_cycle": 1,
     "event_type": "SpecialistCompleted",
     "specialist": "Consensus Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified incident report."
   },
   {
     "timestamp_ms": 30,
     "evidence_cycle": 1,
     "event_type": "SpecialistCompleted",
     "specialist": "Contradiction Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified incident report."
   },
   {
     "timestamp_ms": 40,
     "evidence_cycle": 1,
     "event_type": "SpecialistCompleted",
     "specialist": "Prediction Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified incident report."
   },
   {
     "timestamp_ms": 50,
     "evidence_cycle": 1,
     "event_type": "SpecialistCompleted",
     "specialist": "Source Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.35,
+    "findings": "Unverified anonymous tip."
   },
   {
     "timestamp_ms": 60,
     "evidence_cycle": 1,
     "event_type": "SpecialistCompleted",
     "specialist": "Timeline Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified anonymous tip."
   },
   {
     "timestamp_ms": 70,
     "evidence_cycle": 1,
     "event_type": "SpecialistCompleted",
     "specialist": "Vision Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.35,
+    "findings": "Unverified anonymous tip."
   },
   {
     "timestamp_ms": 80,
     "evidence_cycle": 1,
     "event_type": "ConsensusUpdated",
     "decision": "Evidence Rejected",
-    "confidence": 0.0,
+    "confidence": 0.35,
     "human_review_required": true
   },
   {
@@ -117,55 +117,55 @@
     "evidence_cycle": 2,
     "event_type": "SpecialistCompleted",
     "specialist": "Consensus Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified anonymous image."
   },
   {
     "timestamp_ms": 120,
     "evidence_cycle": 2,
     "event_type": "SpecialistCompleted",
     "specialist": "Contradiction Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified anonymous image."
   },
   {
     "timestamp_ms": 130,
     "evidence_cycle": 2,
     "event_type": "SpecialistCompleted",
     "specialist": "Prediction Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified anonymous image."
   },
   {
     "timestamp_ms": 140,
     "evidence_cycle": 2,
     "event_type": "SpecialistCompleted",
     "specialist": "Source Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.35,
+    "findings": "Unverified anonymous image."
   },
   {
     "timestamp_ms": 150,
     "evidence_cycle": 2,
     "event_type": "SpecialistCompleted",
     "specialist": "Timeline Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified anonymous image."
   },
   {
     "timestamp_ms": 160,
     "evidence_cycle": 2,
     "event_type": "SpecialistCompleted",
     "specialist": "Vision Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.35,
+    "findings": "Unverified anonymous image."
   },
   {
     "timestamp_ms": 170,
     "evidence_cycle": 2,
     "event_type": "ConsensusUpdated",
     "decision": "Evidence Rejected",
-    "confidence": 0.0,
+    "confidence": 0.35,
     "human_review_required": true
   },
   {
@@ -213,55 +213,55 @@
     "evidence_cycle": 3,
     "event_type": "SpecialistCompleted",
     "specialist": "Consensus Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.35,
+    "findings": "HIGH - Social media rumors causing concern."
   },
   {
     "timestamp_ms": 210,
     "evidence_cycle": 3,
     "event_type": "SpecialistCompleted",
     "specialist": "Contradiction Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.35,
+    "findings": "HIGH - Social media rumors causing concern."
   },
   {
     "timestamp_ms": 220,
     "evidence_cycle": 3,
     "event_type": "SpecialistCompleted",
     "specialist": "Prediction Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.35,
+    "findings": "HIGH - Social media rumors causing concern."
   },
   {
     "timestamp_ms": 230,
     "evidence_cycle": 3,
     "event_type": "SpecialistCompleted",
     "specialist": "Source Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.35,
+    "findings": "Social media rumors causing concern."
   },
   {
     "timestamp_ms": 240,
     "evidence_cycle": 3,
     "event_type": "SpecialistCompleted",
     "specialist": "Timeline Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.35,
+    "findings": "HIGH - Social media rumors causing concern."
   },
   {
     "timestamp_ms": 250,
     "evidence_cycle": 3,
     "event_type": "SpecialistCompleted",
     "specialist": "Vision Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.35,
+    "findings": "Social media rumors causing concern."
   },
   {
     "timestamp_ms": 260,
     "evidence_cycle": 3,
     "event_type": "ConsensusUpdated",
     "decision": "Evidence Rejected",
-    "confidence": 0.0,
+    "confidence": 0.35,
     "human_review_required": true
   },
   {
@@ -309,56 +309,56 @@
     "evidence_cycle": 4,
     "event_type": "SpecialistCompleted",
     "specialist": "Consensus Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.95,
+    "findings": "HIGH - Verified official incident report."
   },
   {
     "timestamp_ms": 300,
     "evidence_cycle": 4,
     "event_type": "SpecialistCompleted",
     "specialist": "Contradiction Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.95,
+    "findings": "HIGH - Verified official incident report."
   },
   {
     "timestamp_ms": 310,
     "evidence_cycle": 4,
     "event_type": "SpecialistCompleted",
     "specialist": "Prediction Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.95,
+    "findings": "HIGH - Verified official incident report."
   },
   {
     "timestamp_ms": 320,
     "evidence_cycle": 4,
     "event_type": "SpecialistCompleted",
     "specialist": "Source Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.95,
+    "findings": "Verified official incident report."
   },
   {
     "timestamp_ms": 330,
     "evidence_cycle": 4,
     "event_type": "SpecialistCompleted",
     "specialist": "Timeline Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.95,
+    "findings": "HIGH - Verified official incident report."
   },
   {
     "timestamp_ms": 340,
     "evidence_cycle": 4,
     "event_type": "SpecialistCompleted",
     "specialist": "Vision Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.95,
+    "findings": "Verified official incident report."
   },
   {
     "timestamp_ms": 350,
     "evidence_cycle": 4,
     "event_type": "ConsensusUpdated",
-    "decision": "Evidence Rejected",
-    "confidence": 0.0,
-    "human_review_required": true
+    "decision": "Evidence Accepted",
+    "confidence": 0.95,
+    "human_review_required": false
   },
   {
     "timestamp_ms": 360,
@@ -400,56 +400,56 @@
     "evidence_cycle": 5,
     "event_type": "SpecialistCompleted",
     "specialist": "Consensus Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.95,
+    "findings": "HIGH - Source is a verified system sensor."
   },
   {
     "timestamp_ms": 390,
     "evidence_cycle": 5,
     "event_type": "SpecialistCompleted",
     "specialist": "Contradiction Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.95,
+    "findings": "HIGH - Source is a verified system sensor."
   },
   {
     "timestamp_ms": 400,
     "evidence_cycle": 5,
     "event_type": "SpecialistCompleted",
     "specialist": "Prediction Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.95,
+    "findings": "HIGH - Source is a verified system sensor."
   },
   {
     "timestamp_ms": 410,
     "evidence_cycle": 5,
     "event_type": "SpecialistCompleted",
     "specialist": "Source Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.95,
+    "findings": "Source is a verified system sensor."
   },
   {
     "timestamp_ms": 420,
     "evidence_cycle": 5,
     "event_type": "SpecialistCompleted",
     "specialist": "Timeline Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.95,
+    "findings": "HIGH - Source is a verified system sensor."
   },
   {
     "timestamp_ms": 430,
     "evidence_cycle": 5,
     "event_type": "SpecialistCompleted",
     "specialist": "Vision Specialist",
-    "confidence": 0.0,
-    "findings": "Execution failed. Platform health issue."
+    "confidence": 0.95,
+    "findings": "Source is a verified system sensor."
   },
   {
     "timestamp_ms": 440,
     "evidence_cycle": 5,
     "event_type": "ConsensusUpdated",
-    "decision": "Evidence Rejected",
-    "confidence": 0.0,
-    "human_review_required": true
+    "decision": "Evidence Accepted",
+    "confidence": 0.95,
+    "human_review_required": false
   },
   {
     "timestamp_ms": 450,

@@ -1,0 +1,10 @@
+{
+  "replay_id": "504eb087e1d75367ce70d4f067d7fd80d70ab2b0050d9373e6a72415ead47144",
+  "manifest_hash": "0166b8e7bfabe7e62be2d576c596ba539b013fe98d00d0b807f539930bdbe2a1",
+  "manifest_version": "1.0",
+  "validator_version": "1.0",
+  "replay_hash": "504eb087e1d75367ce70d4f067d7fd80d70ab2b0050d9373e6a72415ead47144",
+  "generation_successful": true,
+  "deterministic": true,
+  "validation_passed": true
+}

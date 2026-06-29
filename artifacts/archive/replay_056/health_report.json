@@ -1,0 +1,114 @@
+{
+  "overall_status": "UNKNOWN",
+  "generated_at": "2026-06-29T06:03:10.214944+00:00",
+  "components": {
+    "cache": {
+      "name": "cache",
+      "status": "HEALTHY",
+      "message": "Cache operational.",
+      "timestamp": "2026-06-29T06:03:10.214944+00:00",
+      "metadata": {
+        "provider": "filesystem",
+        "availability": true,
+        "cache_size": 30,
+        "ttl_configuration": 3600,
+        "cleanup_status": "ENABLED",
+        "corruption_count": 0,
+        "checksum_validation_capability": true
+      }
+    },
+    "circuit_breaker": {
+      "name": "circuit_breaker",
+      "status": "HEALTHY",
+      "message": "Circuit breaker operational.",
+      "timestamp": "2026-06-29T06:03:10.214944+00:00",
+      "metadata": {
+        "state": "UNKNOWN",
+        "failure_count": 0,
+        "recovery_count": 0,
+        "rejection_count": 0,
+        "last_transition": null
+      }
+    },
+    "retry_policy": {
+      "name": "retry_policy",
+      "status": "HEALTHY",
+      "message": "Retry policy operational.",
+      "timestamp": "2026-06-29T06:03:10.214944+00:00",
+      "metadata": {
+        "retries": 0,
+        "exhausted_retries": 0,
+        "average_retry_delay": 0,
+        "terminal_failures": 0
+      }
+    },
+    "event_bus": {
+      "name": "event_bus",
+      "status": "HEALTHY",
+      "message": "EventBus operational.",
+      "timestamp": "2026-06-29T06:03:10.214944+00:00",
+      "metadata": {
+        "subscriber_count": 24,
+        "emitted_events": 180,
+        "dropped_events": 0,
+        "queue_size": 0
+      }
+    },
+    "lock_manager": {
+      "name": "lock_manager",
+      "status": "UNKNOWN",
+      "message": "Concurrent Safety phase not implemented.",
+      "timestamp": "2026-06-29T06:03:10.214944+00:00",
+      "metadata": {}
+    },
+    "artifact_writer": {
+      "name": "artifact_writer",
+      "status": "HEALTHY",
+      "message": "Artifact writer operational.",
+      "timestamp": "2026-06-29T06:03:10.214944+00:00",
+      "metadata": {
+        "staging_state": "EMPTY",
+        "archive_state": "AVAILABLE",
+        "transaction_status": "OK",
+        "rollback_count": 0
+      }
+    },
+    "recovery_manager": {
+      "name": "recovery_manager",
+      "status": "HEALTHY",
+      "message": "Recovery Manager operational.",
+      "timestamp": "2026-06-29T06:03:10.214944+00:00",
+      "metadata": {
+        "recovery_count": 0,
+        "quarantine_entries": 0,
+        "archive_restores": 0,
+        "failed_recoveries": 0
+      }
+    },
+    "provenance": {
+      "name": "provenance",
+      "status": "HEALTHY",
+      "message": "Provenance available.",
+      "timestamp": "2026-06-29T06:03:10.214944+00:00",
+      "metadata": {
+        "replay_id": null,
+        "manifest_version": null,
+        "schema_version": null,
+        "prompt_bundle_version": null,
+        "git_metadata_availability": false
+      }
+    },
+    "evaluation": {
+      "name": "evaluation",
+      "status": "HEALTHY",
+      "message": "Evaluation completed.",
+      "timestamp": "2026-06-29T06:03:10.214944+00:00",
+      "metadata": {
+        "latest_evaluation": null,
+        "benchmark_status": "PASS",
+        "determinism_rate": "100%",
+        "golden_dataset_version": null
+      }
+    }
+  }
+}

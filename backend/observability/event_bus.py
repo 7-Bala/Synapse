@@ -17,6 +17,11 @@ class EventBus:
     def __init__(self, enabled: bool = True):
         self.enabled = enabled
         self._subscribers: List[Callable[[BaseEvent], None]] = []
+        self.emitted_count = 0
+        self.dropped_count = 0
+        
+    def queue_size(self) -> int:
+        return 0  # Synchronous bus has no persistent queue
 
     @classmethod
     def get_instance(cls, enabled: bool = True) -> "EventBus":
@@ -39,9 +44,10 @@ class EventBus:
         if not self.enabled:
             return
 
+        self.emitted_count += 1
         for subscriber in self._subscribers:
             try:
                 subscriber(event)
             except Exception:
                 # Observability must never crash or delay execution
-                pass
+                self.dropped_count += 1
