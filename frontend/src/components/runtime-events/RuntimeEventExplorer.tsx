@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { TimelineView } from './TimelineView';
+import { TimelineView } from '@/components/runtime-events/TimelineView';
 import { useTimelineStore } from '@/stores/timelineStore';
-import { TimelineDetails } from './TimelineDetails';
-import { TimelineToolbar, type RuntimeEventView } from './TimelineToolbar';
+import { TimelineDetails } from '@/components/runtime-events/TimelineDetails';
+import { TimelineToolbar, type RuntimeEventView } from '@/components/runtime-events/TimelineToolbar';
 
 export interface RuntimeEventExplorerProps {
   compact?: boolean;
