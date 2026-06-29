@@ -233,3 +233,113 @@ class FailureBypassed(BaseEvent):
 
     component: str
     fault_type: str
+
+# --- Execution Lifecycle Events ---
+
+class ExecutionCreated(BaseEvent):
+    pass
+
+class ExecutionStarted(BaseEvent):
+    status: str = "running"
+
+class ExecutionPaused(BaseEvent):
+    reason: str
+
+class ExecutionResumed(BaseEvent):
+    pass
+
+class ExecutionCompleted(BaseEvent):
+    pass
+
+class ExecutionFailed(BaseEvent):
+    error: str
+
+
+# --- Tick Lifecycle Events ---
+
+class TickStarted(BaseEvent):
+    tick_id: int
+
+class TickCompleted(BaseEvent):
+    tick_id: int
+
+
+# --- Agent Lifecycle Events ---
+
+class AgentStarted(BaseEvent):
+    agent_id: str
+    tick_id: int
+
+class AgentCompleted(BaseEvent):
+    agent_id: str
+    tick_id: int
+    latency_ms: int = 0
+    result_reference: Optional[str] = None
+
+class AgentFailed(BaseEvent):
+    agent_id: str
+    tick_id: int
+    error: str
+
+
+# --- Blackboard Events ---
+
+class BlackboardUpdated(BaseEvent):
+    tick_id: int
+    agent_id: str
+
+class BlackboardSnapshotCreated(BaseEvent):
+    tick_id: int
+
+
+# --- Consensus Events ---
+
+class ConsensusStarted(BaseEvent):
+    tick_id: int
+
+class ConsensusCompleted(BaseEvent):
+    tick_id: int
+    decision: str
+    confidence: float
+
+
+# --- Validator Events ---
+
+class ValidationPassed(BaseEvent):
+    validator_id: str
+
+class ValidationBlocked(BaseEvent):
+    validator_id: str
+    reason: str
+
+class ValidationFailed(BaseEvent):
+    validator_id: str
+    error: str
+
+class ValidatorOverrideApplied(BaseEvent):
+    validator_id: str
+    overridden_by: str
+
+
+# --- Tool Call Events ---
+
+class ToolCallStarted(BaseEvent):
+    tool_name: str
+
+class ToolCallCompleted(BaseEvent):
+    tool_name: str
+    latency_ms: int = 0
+
+class ToolCallFailed(BaseEvent):
+    tool_name: str
+    error: str
+
+
+# --- Evidence Events ---
+
+class EvidenceAdded(BaseEvent):
+    evidence_id: str
+
+class EvidenceResolved(BaseEvent):
+    evidence_id: str
+

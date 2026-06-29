@@ -22,3 +22,13 @@ backend/evaluation_output/
 backend/evaluation_summary.md
 backend/golden_update_report.md
 frontend/public/events.json
+
+# IDE and OS
+.idea/
+Thumbs.db
+
+# Generated
+*repomix*.md
+*repomix*.xml
+project-tree.txt
+repo_files.txt
