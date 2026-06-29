@@ -8,7 +8,12 @@ export function WorkspaceHeader({ onOpenCommandPalette }: WorkspaceHeaderProps) 
   return (
     <header className="h-12 border-b border-border bg-surface flex items-center justify-between px-4 shrink-0 z-40">
       {/* Context Area */}
-      <div className="flex items-center gap-3 text-sm font-sans">
+      <div className="flex items-center gap-4 text-sm font-sans">
+        <div className="flex items-center gap-2 pr-4 border-r border-border-subtle">
+          <img src="/logo.png" alt="Synapse Logo" className="h-6 object-contain" />
+          <span className="font-semibold text-foreground tracking-tight">Synapse</span>
+        </div>
+
         <div className="flex items-center gap-1.5 px-2 py-1 bg-surface-elevated border border-border-subtle rounded text-foreground-muted cursor-pointer hover:text-foreground transition-colors">
           <Globe className="size-3.5" strokeWidth={1.5} />
           <span className="text-2xs font-mono uppercase tracking-wider">Production</span>

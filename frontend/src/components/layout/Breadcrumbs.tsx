@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { ChevronRight, Home } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import { getPageTitle } from '@/config/navigation'
 import { cn } from '@/lib/utils'
 
@@ -27,9 +27,9 @@ export function Breadcrumbs({ className, items }: BreadcrumbsProps) {
             {crumb.path && !isLast ? (
               <Link
                 to={crumb.path}
-                className="flex items-center gap-1 text-muted hover:text-foreground transition-colors truncate"
+                className="flex items-center gap-1.5 text-muted hover:text-foreground transition-colors truncate"
               >
-                {index === 0 && <Home className="size-3.5 shrink-0" />}
+                {index === 0 && <img src="/logo.png" alt="Synapse Logo" className="size-3.5 object-contain shrink-0" />}
                 <span className="truncate">{crumb.label}</span>
               </Link>
             ) : (
