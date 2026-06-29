@@ -3,7 +3,7 @@
 import asyncio
 import json
 from typing import Any, Dict
-from uuid import uuid4
+from uuid import uuid4, uuid5, NAMESPACE_DNS
 
 from agents.base import BaseAgent
 from core.orchestrator import Orchestrator
@@ -91,9 +91,10 @@ class EvidencePlayer:
 
             # 1. Parse and build evidence
             evidences = []
-            for ev_data in tick_data.get("evidence", []):
+            for idx, ev_data in enumerate(tick_data.get("evidence", [])):
+                deterministic_id = uuid5(NAMESPACE_DNS, f"synapse_{cycle_id}_{idx}_{ev_data['content']}")
                 ev = Evidence(
-                    id=uuid4(), content=ev_data["content"], source=ev_data["source"]
+                    id=deterministic_id, content=ev_data["content"], source=ev_data["source"]
                 )
                 evidences.append(ev)
 

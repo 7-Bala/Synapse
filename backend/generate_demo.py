@@ -135,7 +135,7 @@ async def main() -> None:
         "configuration": provenance.get_system_metadata(),
         "runtime": provenance.get_runtime_metadata(),
         "generation_duration_seconds": round(duration, 2),
-        "validation_results": {"status": "SUCCESS"},  # Extended later
+        "validation_results": {"status": "SUCCESS"},
         "artifact_hashes": {
             "events_json": events_hash,
             "metrics_json": metrics_hash,
@@ -149,12 +149,21 @@ async def main() -> None:
         "replay_identifier": "PENDING",
     }
 
-    manifest_content = json.dumps(manifest, indent=2)
-    manifest_hash = sha256_content(manifest_content)
+    # Create a deterministic copy of manifest to hash for Replay ID
+    manifest_for_hash = manifest.copy()
+    manifest_for_hash["runtime"] = {"isolated": True}
+    manifest_for_hash["generation_duration_seconds"] = 0.0
+    
+    # Also isolate metrics hash because it fluctuates with execution timing
+    artifact_hashes_copy = manifest_for_hash["artifact_hashes"].copy()
+    artifact_hashes_copy["metrics_json"] = "PENDING"
+    manifest_for_hash["artifact_hashes"] = artifact_hashes_copy
+
+    manifest_content_for_hash = json.dumps(manifest_for_hash, indent=2)
+    manifest_hash_for_id = sha256_content(manifest_content_for_hash)
 
     # 6. Calculate Replay ID
-    # Replay ID = SHA256(events hash + manifest hash + prompt bundle hash)
-    replay_id_str = f"{events_hash}{manifest_hash}{prompt_bundle_hash}"
+    replay_id_str = f"{events_hash}{manifest_hash_for_id}{prompt_bundle_hash}"
     replay_id = sha256_content(replay_id_str)
 
     # Update manifest with Replay ID (and rehash since we changed it)

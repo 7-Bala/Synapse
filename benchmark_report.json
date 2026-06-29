@@ -1,0 +1,12 @@
+{
+  "iterations": 10,
+  "average_latency": 1.2090994358062743,
+  "median_latency": 1.088191032409668,
+  "p95_latency": 2.4732248783111572,
+  "standard_deviation": 0.42423910472619764,
+  "determinism_rate": 1.0,
+  "failure_rate": 0.0,
+  "cache_hit_ratio": 0.0,
+  "cache_miss_ratio": 0.0,
+  "memory_usage": 0.0
+}

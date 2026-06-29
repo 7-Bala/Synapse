@@ -94,8 +94,17 @@ class ReplayValidator:
 
         # 3. Verify Replay ID
         # The Replay ID is generated using the manifest hash BEFORE the replay_identifier was injected
+        # and isolated from timestamp fields.
         manifest_copy = manifest.copy()
         manifest_copy["replay_identifier"] = "PENDING"
+        manifest_copy["runtime"] = {"isolated": True}
+        manifest_copy["generation_duration_seconds"] = 0.0
+        
+        artifact_hashes_copy = manifest_copy.get("artifact_hashes", {}).copy()
+        if "metrics_json" in artifact_hashes_copy:
+            artifact_hashes_copy["metrics_json"] = "PENDING"
+            manifest_copy["artifact_hashes"] = artifact_hashes_copy
+        
         intermediate_manifest_hash = hashlib.sha256(json.dumps(manifest_copy, indent=2).encode("utf-8")).hexdigest()
         
         computed_events_hash = sha256_file(os.path.join(self.artifacts_dir, events_filename))

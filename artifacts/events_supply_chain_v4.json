@@ -5,12 +5,12 @@
     "event_type": "EvidenceReceived",
     "payload": [
       {
-        "id": "cb946726-3c2f-4a0d-8349-b828d207428b",
+        "id": "1a1bb5c4-afff-55d0-8fcf-16cf0cdba319",
         "content": "Massive explosion reported at Port of Singapore. Terminal completely offline. Looks catastrophic. #SupplyChain #Disaster",
         "source": "Social Media"
       },
       {
-        "id": "607a6428-fec3-43bf-bd53-05787d385239",
+        "id": "0ab89751-4601-59f5-a91e-352e25f52bbe",
         "content": "Vessel traffic velocity entering Port of Singapore sector has dropped by 80% over the last 15 minutes. Multiple vessels entering holding patterns.",
         "source": "AIS Telemetry"
       }
@@ -21,24 +21,24 @@
     "evidence_cycle": 1,
     "event_type": "SpecialistCompleted",
     "specialist": "Consensus Specialist",
-    "confidence": 0.9,
-    "findings": "All agents agree on the current state."
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified incident report."
   },
   {
     "timestamp_ms": 30,
     "evidence_cycle": 1,
     "event_type": "SpecialistCompleted",
     "specialist": "Contradiction Specialist",
-    "confidence": 0.9,
-    "findings": "No contradictions found in current evidence delta."
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified incident report."
   },
   {
     "timestamp_ms": 40,
     "evidence_cycle": 1,
     "event_type": "SpecialistCompleted",
     "specialist": "Prediction Specialist",
-    "confidence": 0.9,
-    "findings": "System state expected to remain stable."
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified incident report."
   },
   {
     "timestamp_ms": 50,
@@ -53,16 +53,16 @@
     "evidence_cycle": 1,
     "event_type": "SpecialistCompleted",
     "specialist": "Timeline Specialist",
-    "confidence": 0.9,
-    "findings": "Event occurred in chronological sequence."
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified anonymous tip."
   },
   {
     "timestamp_ms": 70,
     "evidence_cycle": 1,
     "event_type": "SpecialistCompleted",
     "specialist": "Vision Specialist",
-    "confidence": 0.9,
-    "findings": "No objects detected in the current view."
+    "confidence": 0.35,
+    "findings": "Unverified anonymous tip."
   },
   {
     "timestamp_ms": 80,
@@ -101,12 +101,12 @@
     "event_type": "EvidenceReceived",
     "payload": [
       {
-        "id": "c5655ecd-66b9-40d1-9c28-7bd2a90d9d32",
+        "id": "9442f0d4-25cc-562c-9847-48778ec16f95",
         "content": "IMAGE_SPEC: drone_terminal_smoke.png. DESCRIPTION: A blurry overhead view showing dark black smoke billowing from the eastern edge of the port terminal.",
         "source": "Drone OCR"
       },
       {
-        "id": "d1f722f2-c7db-4732-a366-b6e8a498804b",
+        "id": "e9e1a41b-0f26-5cf8-8fe9-7c1feeaacc02",
         "content": "STATUS UPDATE: Port operations temporarily paused in Eastern Sector for safety assessment. Emergency services dispatched.",
         "source": "Port Authority API"
       }
@@ -117,24 +117,24 @@
     "evidence_cycle": 2,
     "event_type": "SpecialistCompleted",
     "specialist": "Consensus Specialist",
-    "confidence": 0.9,
-    "findings": "All agents agree on the current state."
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified anonymous image."
   },
   {
     "timestamp_ms": 120,
     "evidence_cycle": 2,
     "event_type": "SpecialistCompleted",
     "specialist": "Contradiction Specialist",
-    "confidence": 0.9,
-    "findings": "No contradictions found in current evidence delta."
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified anonymous image."
   },
   {
     "timestamp_ms": 130,
     "evidence_cycle": 2,
     "event_type": "SpecialistCompleted",
     "specialist": "Prediction Specialist",
-    "confidence": 0.9,
-    "findings": "System state expected to remain stable."
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified anonymous image."
   },
   {
     "timestamp_ms": 140,
@@ -149,16 +149,16 @@
     "evidence_cycle": 2,
     "event_type": "SpecialistCompleted",
     "specialist": "Timeline Specialist",
-    "confidence": 0.9,
-    "findings": "Event occurred in chronological sequence."
+    "confidence": 0.35,
+    "findings": "HIGH - Unverified anonymous image."
   },
   {
     "timestamp_ms": 160,
     "evidence_cycle": 2,
     "event_type": "SpecialistCompleted",
     "specialist": "Vision Specialist",
-    "confidence": 0.9,
-    "findings": "No objects detected in the current view."
+    "confidence": 0.35,
+    "findings": "Unverified anonymous image."
   },
   {
     "timestamp_ms": 170,
@@ -197,12 +197,12 @@
     "event_type": "EvidenceReceived",
     "payload": [
       {
-        "id": "1112518c-fe4e-4637-95a2-91087a7e4c0d",
+        "id": "fe266ad1-4264-5f43-8700-5e0868e5ba12",
         "content": "BREAKING: Singapore port faces catastrophic disruption. Industry analysts predict 3 weeks of backlog. Global shipping stocks plummeting.",
         "source": "Financial News"
       },
       {
-        "id": "0b219ca5-d197-4d1d-ba95-8115357fc557",
+        "id": "25036775-a80e-549d-8ed4-ad739de2e46e",
         "content": "Spot freight rates for Asia-Europe routes have surged by 400% in the last 20 minutes.",
         "source": "Internal Procurement API"
       }
@@ -213,24 +213,24 @@
     "evidence_cycle": 3,
     "event_type": "SpecialistCompleted",
     "specialist": "Consensus Specialist",
-    "confidence": 0.9,
-    "findings": "All agents agree on the current state."
+    "confidence": 0.35,
+    "findings": "HIGH - Social media rumors causing concern."
   },
   {
     "timestamp_ms": 210,
     "evidence_cycle": 3,
     "event_type": "SpecialistCompleted",
     "specialist": "Contradiction Specialist",
-    "confidence": 0.9,
-    "findings": "No contradictions found in current evidence delta."
+    "confidence": 0.35,
+    "findings": "HIGH - Social media rumors causing concern."
   },
   {
     "timestamp_ms": 220,
     "evidence_cycle": 3,
     "event_type": "SpecialistCompleted",
     "specialist": "Prediction Specialist",
-    "confidence": 0.9,
-    "findings": "System state expected to remain stable."
+    "confidence": 0.35,
+    "findings": "HIGH - Social media rumors causing concern."
   },
   {
     "timestamp_ms": 230,
@@ -245,16 +245,16 @@
     "evidence_cycle": 3,
     "event_type": "SpecialistCompleted",
     "specialist": "Timeline Specialist",
-    "confidence": 0.9,
-    "findings": "Event occurred in chronological sequence."
+    "confidence": 0.35,
+    "findings": "HIGH - Social media rumors causing concern."
   },
   {
     "timestamp_ms": 250,
     "evidence_cycle": 3,
     "event_type": "SpecialistCompleted",
     "specialist": "Vision Specialist",
-    "confidence": 0.9,
-    "findings": "No objects detected in the current view."
+    "confidence": 0.35,
+    "findings": "Social media rumors causing concern."
   },
   {
     "timestamp_ms": 260,
@@ -293,12 +293,12 @@
     "event_type": "EvidenceReceived",
     "payload": [
       {
-        "id": "b65644ce-2d9e-48fa-8c56-25a5ae319f24",
+        "id": "c90bead8-0c43-59d2-9467-b6c15111e4f4",
         "content": "IMAGE_SPEC: sat_high_res_thermal.png. DESCRIPTION: High-resolution thermal scan shows the main terminals are undamaged. The fire is isolated to a single independent chemical warehouse 3 miles inland.",
         "source": "Satellite Intelligence"
       },
       {
-        "id": "212d883a-29ff-4f4e-b1e0-ee50ba2f1d8b",
+        "id": "48ea1579-5d04-53e1-91e0-04e84eea249d",
         "content": "WIND SHIFT ALERTS: 40-knot coastal winds blowing directly westward from the inland industrial park over the main port terminal.",
         "source": "Meteorological Feed"
       }
@@ -309,24 +309,24 @@
     "evidence_cycle": 4,
     "event_type": "SpecialistCompleted",
     "specialist": "Consensus Specialist",
-    "confidence": 0.9,
-    "findings": "All agents agree on the current state."
+    "confidence": 0.95,
+    "findings": "HIGH - Verified official incident report."
   },
   {
     "timestamp_ms": 300,
     "evidence_cycle": 4,
     "event_type": "SpecialistCompleted",
     "specialist": "Contradiction Specialist",
-    "confidence": 0.9,
-    "findings": "No contradictions found in current evidence delta."
+    "confidence": 0.95,
+    "findings": "HIGH - Verified official incident report."
   },
   {
     "timestamp_ms": 310,
     "evidence_cycle": 4,
     "event_type": "SpecialistCompleted",
     "specialist": "Prediction Specialist",
-    "confidence": 0.9,
-    "findings": "System state expected to remain stable."
+    "confidence": 0.95,
+    "findings": "HIGH - Verified official incident report."
   },
   {
     "timestamp_ms": 320,
@@ -341,16 +341,16 @@
     "evidence_cycle": 4,
     "event_type": "SpecialistCompleted",
     "specialist": "Timeline Specialist",
-    "confidence": 0.9,
-    "findings": "Event occurred in chronological sequence."
+    "confidence": 0.95,
+    "findings": "HIGH - Verified official incident report."
   },
   {
     "timestamp_ms": 340,
     "evidence_cycle": 4,
     "event_type": "SpecialistCompleted",
     "specialist": "Vision Specialist",
-    "confidence": 0.9,
-    "findings": "No objects detected in the current view."
+    "confidence": 0.95,
+    "findings": "Verified official incident report."
   },
   {
     "timestamp_ms": 350,
@@ -389,7 +389,7 @@
     "event_type": "EvidenceReceived",
     "payload": [
       {
-        "id": "fb2ce56c-edbd-460c-8690-22354b80e04d",
+        "id": "31206591-b50d-525e-a987-021131ed4d20",
         "content": "STATUS UPDATE: Inland warehouse fire extinguished. No damage to port infrastructure. Smoke cleared. Full terminal operations resuming in 60 minutes.",
         "source": "Port Authority API"
       }
@@ -400,24 +400,24 @@
     "evidence_cycle": 5,
     "event_type": "SpecialistCompleted",
     "specialist": "Consensus Specialist",
-    "confidence": 0.9,
-    "findings": "All agents agree on the current state."
+    "confidence": 0.95,
+    "findings": "HIGH - Source is a verified system sensor."
   },
   {
     "timestamp_ms": 390,
     "evidence_cycle": 5,
     "event_type": "SpecialistCompleted",
     "specialist": "Contradiction Specialist",
-    "confidence": 0.9,
-    "findings": "No contradictions found in current evidence delta."
+    "confidence": 0.95,
+    "findings": "HIGH - Source is a verified system sensor."
   },
   {
     "timestamp_ms": 400,
     "evidence_cycle": 5,
     "event_type": "SpecialistCompleted",
     "specialist": "Prediction Specialist",
-    "confidence": 0.9,
-    "findings": "System state expected to remain stable."
+    "confidence": 0.95,
+    "findings": "HIGH - Source is a verified system sensor."
   },
   {
     "timestamp_ms": 410,
@@ -432,16 +432,16 @@
     "evidence_cycle": 5,
     "event_type": "SpecialistCompleted",
     "specialist": "Timeline Specialist",
-    "confidence": 0.9,
-    "findings": "Event occurred in chronological sequence."
+    "confidence": 0.95,
+    "findings": "HIGH - Source is a verified system sensor."
   },
   {
     "timestamp_ms": 430,
     "evidence_cycle": 5,
     "event_type": "SpecialistCompleted",
     "specialist": "Vision Specialist",
-    "confidence": 0.9,
-    "findings": "No objects detected in the current view."
+    "confidence": 0.95,
+    "findings": "Source is a verified system sensor."
   },
   {
     "timestamp_ms": 440,
