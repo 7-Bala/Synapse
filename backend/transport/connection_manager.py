@@ -26,10 +26,13 @@ class ConnectionManager:
             del self._connections[connection.connection_id]
             logger.info(f"Unregistered connection {connection.connection_id}. Total: {len(self._connections)}")
 
-    async def broadcast(self, event_name: str, payload: str) -> None:
+    async def broadcast(self, event_name: str, envelope: 'EventEnvelope') -> None:
         """Broadcast an event payload to all active connections."""
         if not self._connections:
             return
+            
+        from .serializer import TransportSerializer
+        payload = TransportSerializer.serialize_envelope(envelope)
             
         tasks = [
             conn.send_payload(payload) 
@@ -44,9 +47,11 @@ class ConnectionManager:
                 if isinstance(res, Exception):
                     logger.debug(f"Broadcast error: {res}")
 
-    async def send(self, connection_id: str, payload: str) -> None:
+    async def send(self, connection_id: str, envelope: 'EventEnvelope') -> None:
         """Send a payload to a specific connection."""
         if connection_id in self._connections:
             conn = self._connections[connection_id]
             if hasattr(conn, 'send_payload'):
+                from .serializer import TransportSerializer
+                payload = TransportSerializer.serialize_envelope(envelope)
                 await conn.send_payload(payload)

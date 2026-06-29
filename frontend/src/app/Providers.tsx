@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
 import { useEffect } from 'react'
-import { socketClient } from '../lib/api/socket'
+import { socketClient } from '../lib/socket'
 
 const queryClient = new QueryClient({
   defaultOptions: {

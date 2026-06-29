@@ -37,7 +37,7 @@ class TransportAdapter:
         # Fire and forget into the current async event loop
         try:
             loop = asyncio.get_running_loop()
-            loop.create_task(self.connection_manager.broadcast(event_type, envelope.model_dump_json()))
+            loop.create_task(self.connection_manager.broadcast(event_type, envelope))
         except RuntimeError:
             # If no running loop, we can't broadcast (e.g. some synchronous tests)
             pass
