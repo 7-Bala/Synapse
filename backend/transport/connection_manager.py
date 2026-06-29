@@ -2,6 +2,7 @@
 
 from typing import Dict, List, Optional
 import logging
+import asyncio
 
 from .transport_protocol import Connection
 
@@ -26,17 +27,26 @@ class ConnectionManager:
             logger.info(f"Unregistered connection {connection.connection_id}. Total: {len(self._connections)}")
 
     async def broadcast(self, event_name: str, payload: str) -> None:
-        """Broadcast an event payload to all active connections.
+        """Broadcast an event payload to all active connections."""
+        if not self._connections:
+            return
+            
+        tasks = [
+            conn.send_payload(payload) 
+            for conn in self._connections.values()
+            if hasattr(conn, 'send_payload')
+        ]
         
-        The actual sending logic must be implemented by the specific protocol
-        by subclassing Connection and handling the network IO. This manager
-        only acts as the registry.
-        """
-        # In a real implementation, this would iterate over self._connections
-        # and invoke a protocol-specific send method on each Connection object.
-        pass
+        if tasks:
+            # Send concurrently, ignoring errors on disconnected sockets
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            for res in results:
+                if isinstance(res, Exception):
+                    logger.debug(f"Broadcast error: {res}")
 
     async def send(self, connection_id: str, payload: str) -> None:
         """Send a payload to a specific connection."""
         if connection_id in self._connections:
-            pass
+            conn = self._connections[connection_id]
+            if hasattr(conn, 'send_payload'):
+                await conn.send_payload(payload)

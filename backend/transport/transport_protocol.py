@@ -12,6 +12,11 @@ class Connection(ABC):
     def connection_id(self) -> str:
         """Unique identifier for the connection."""
         pass
+        
+    @abstractmethod
+    async def send_payload(self, payload: str) -> None:
+        """Send a string payload over the connection."""
+        pass
 
 
 class EventPublisher(ABC):

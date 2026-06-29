@@ -25,16 +25,19 @@ class TransportAdapter:
 
     def _handle_backend_event(self, event: BaseEvent) -> None:
         """Observe backend EventBus, transform, and push to connection manager."""
+        import asyncio
         event_type = type(event).__name__
         
-        # Example naive mapping (in reality this would deeply map each type)
-        # We are only observing and publishing. We do not modify business logic.
         envelope = EventEnvelope(
             executionId=getattr(event, "correlation_id", self.execution_id),
             type=event_type,
             payload=event.model_dump()
         )
         
-        # We would serialize and pass to connection_manager.broadcast()
-        # await self.connection_manager.broadcast(event_type, envelope.model_dump_json())
-        pass
+        # Fire and forget into the current async event loop
+        try:
+            loop = asyncio.get_running_loop()
+            loop.create_task(self.connection_manager.broadcast(event_type, envelope.model_dump_json()))
+        except RuntimeError:
+            # If no running loop, we can't broadcast (e.g. some synchronous tests)
+            pass
