@@ -2,9 +2,7 @@ import { useState } from 'react';
 import { TimelineView } from './TimelineView';
 import { useTimelineStore } from '@/stores/timelineStore';
 import { TimelineDetails } from './TimelineDetails';
-import { TimelineToolbar } from './TimelineToolbar';
-
-export type RuntimeEventView = 'timeline' | 'tree' | 'json' | 'agent' | 'tick';
+import { TimelineToolbar, type RuntimeEventView } from './TimelineToolbar';
 
 export interface RuntimeEventExplorerProps {
   compact?: boolean;

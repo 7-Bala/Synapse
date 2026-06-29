@@ -2,8 +2,9 @@ import { Play, Pause, ArrowDownToLine, Trash2 } from 'lucide-react';
 import { useTimelineStore } from '@/stores/timelineStore';
 import { TimelineSearch } from './TimelineSearch';
 import { TimelineFilters } from './TimelineFilters';
-import type { RuntimeEventView } from './RuntimeEventExplorer';
 import { cn } from '@/lib/utils';
+
+export type RuntimeEventView = 'timeline' | 'tree' | 'json' | 'agent' | 'tick';
 
 interface TimelineToolbarProps {
   currentView: RuntimeEventView;
