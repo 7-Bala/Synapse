@@ -26,3 +26,8 @@ class BaseAgent(abc.ABC):
             AgentOutput: The structured output from the agent.
         """
         pass
+
+    @abc.abstractmethod
+    def get_metadata(self) -> dict:
+        """Returns provenance metadata for the agent."""
+        pass

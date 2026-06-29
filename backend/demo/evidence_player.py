@@ -24,6 +24,9 @@ class RecordingAgentWrapper(BaseAgent):
     def name(self) -> str:
         return self._agent.name
 
+    def get_metadata(self) -> dict:
+        return self._agent.get_metadata()
+
     async def run(self, context: TickContext) -> AgentOutput:
         # Run the actual agent
         output = await self._agent.run(context)

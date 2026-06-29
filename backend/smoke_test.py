@@ -1,15 +1,24 @@
 """Smoke test script for Synapse AI infrastructure."""
 
 import os
+from pathlib import Path
 
 
 from prompts.base import PromptBuilder
 from services.cerebras import CerebrasService
 from validators.response_validator import ResponseValidator
+from validators.architecture_validator import validate_architecture
 
 
 def run_smoke_test() -> None:
     """Runs the smoke test pipeline."""
+    # 0. Architecture Validation
+    print("\n--- Running Architecture Validator ---")
+    backend_path = Path(__file__).parent
+    if not validate_architecture(backend_path):
+        print("Architecture validation failed!")
+        exit(1)
+
     # 1. Setup mock template
     prompts_dir = os.path.join(os.path.dirname(__file__), "prompts", "system")
     os.makedirs(prompts_dir, exist_ok=True)

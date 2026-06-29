@@ -14,7 +14,13 @@ from agents.consensus import ConsensusAgent
 class SpecialistRegistry:
     """Explicit deterministic registry that discovers specialists through static configuration."""
 
-    def __init__(self, prompt_loader, cerebras_service, cache_manager, pipeline_state):
+    def __init__(
+        self,
+        prompt_loader,
+        cerebras_service,
+        cache_manager,
+        pipeline_state,
+    ):
         self._prompt_loader = prompt_loader
         self._cerebras_service = cerebras_service
         self._cache_manager = cache_manager

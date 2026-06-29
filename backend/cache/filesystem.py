@@ -5,9 +5,11 @@ import json
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+from .provider import CacheProvider
 
-class CacheManager:
-    """Manages independent caching per specialist."""
+
+class FilesystemCacheProvider(CacheProvider):
+    """Manages independent caching per specialist using the local filesystem."""
 
     def __init__(self, cache_dir: str):
         self.cache_dir = Path(cache_dir)

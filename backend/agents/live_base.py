@@ -1,18 +1,28 @@
 """Abstract base class for all live specialists."""
 
 import hashlib
-from datetime import datetime
 from typing import Dict, Type
 
 from agents.base import BaseAgent
 from core.confidence_engine import compute_confidence
 from core.pipeline_state import PipelineState
 from core.tick_context import TickContext
+from observability.event_bus import EventBus
+from observability.events import (
+    SpecialistStarted,
+    SpecialistFinished,
+    LLMRequestStarted,
+    LLMRequestFinished,
+    CacheLookupStarted,
+    CacheLookupFinished,
+    CacheHit,
+    CacheMiss,
+    ValidationStarted,
+    ValidationFinished,
+)
 from schemas.agent import AgentOutput, LiveSpecialistOutput, SpecialistStatus
-from services.cache_manager import CacheManager
+from cache.provider import CacheProvider
 from services.cerebras import CerebrasService
-from services.latency_tracker import LatencyTracker
-from services.metrics_logger import SpecialistMetrics
 from services.prompt_loader import PromptLoader
 from services.structured_output import StructuredOutputValidator
 
@@ -26,7 +36,7 @@ class LiveBaseSpecialist(BaseAgent):
         prompt_version: str,
         prompt_loader: PromptLoader,
         cerebras_service: CerebrasService,
-        cache_manager: CacheManager,
+        cache_manager: CacheProvider,
         pipeline_state: PipelineState,
     ):
         self._name = name
@@ -35,7 +45,7 @@ class LiveBaseSpecialist(BaseAgent):
         self._cerebras_service = cerebras_service
         self._cache_manager = cache_manager
         self._pipeline_state = pipeline_state
-        self._latency_tracker = LatencyTracker()
+        self._event_bus = EventBus.get_instance()
 
     @property
     def name(self) -> str:
@@ -49,10 +59,26 @@ class LiveBaseSpecialist(BaseAgent):
         """Must be implemented by subclasses to build LLM messages."""
         raise NotImplementedError
 
+    def get_metadata(self) -> dict:
+        """Returns provenance metadata for the agent."""
+        return {
+            "name": self.name,
+            "version": "1.0",
+            "implementation_version": "1.0",
+            "prompt_version": self._prompt_version,
+            "schema_version": "1.0",
+        }
+
     async def run(self, context: TickContext) -> AgentOutput:
         """Executes the live specialist pipeline."""
-        started_at = datetime.utcnow().isoformat() + "Z"
-        self._latency_tracker.start("total")
+
+        self._event_bus.emit(
+            SpecialistStarted(
+                correlation_id=str(context.tick_id),
+                specialist=self.name,
+                evidence_cycle=context.tick_id,
+            )
+        )
 
         evidence_content = (
             [ev.content for ev in context.evidence_delta]
@@ -61,36 +87,42 @@ class LiveBaseSpecialist(BaseAgent):
         )
         evidence_str = "".join(evidence_content)
         evidence_hash = hashlib.sha256(evidence_str.encode("utf-8")).hexdigest()
-
         scenario = self._pipeline_state.scenario_name
 
         # 1. Check Cache
+        self._event_bus.emit(
+            CacheLookupStarted(
+                correlation_id=str(context.tick_id), specialist=self.name
+            )
+        )
+
         cached_data = self._cache_manager.get(
             self.name, self._prompt_version, evidence_hash, scenario
         )
 
-        if cached_data:
-            latency = self._latency_tracker.stop("total")
-
-            # Record Metrics
-            metrics = SpecialistMetrics(
-                specialist=self.name,
-                started_at=started_at,
-                finished_at=datetime.utcnow().isoformat() + "Z",
-                latency_ms=latency,
-                tokens_in=0,
-                tokens_out=0,
-                cache_hit=True,
-                status=cached_data["status"],
+        self._event_bus.emit(
+            CacheLookupFinished(
+                correlation_id=str(context.tick_id), specialist=self.name
             )
-            self._pipeline_state.metrics.setdefault(str(context.tick_id), []).append(
-                metrics
+        )
+
+        if cached_data:
+            self._event_bus.emit(
+                CacheHit(correlation_id=str(context.tick_id), specialist=self.name)
             )
             self._pipeline_state.completed_specialists.add(self.name)
-
-            # Reconstruct and compute deterministic confidence
             confidence = compute_confidence(
                 cached_data["confidence_reason"], cached_data["finding"]
+            )
+
+            self._event_bus.emit(
+                SpecialistFinished(
+                    correlation_id=str(context.tick_id),
+                    specialist=self.name,
+                    evidence_cycle=context.tick_id,
+                    status=cached_data["status"],
+                    confidence=confidence,
+                )
             )
 
             return AgentOutput(
@@ -99,46 +131,80 @@ class LiveBaseSpecialist(BaseAgent):
                 findings=cached_data["finding"],
             )
 
+        self._event_bus.emit(
+            CacheMiss(correlation_id=str(context.tick_id), specialist=self.name)
+        )
+
         # 2. Build Request
         messages = self.build_messages(context)
 
         # 3. Call Cerebras
-        self._latency_tracker.start("llm")
+        self._event_bus.emit(
+            LLMRequestStarted(
+                correlation_id=str(context.tick_id),
+                specialist=self.name,
+                prompt_version=self._prompt_version,
+            )
+        )
+
         try:
             raw_response = self._cerebras_service.generate_structured_response(
                 messages=messages, response_format={"type": "json_object"}
             )
-            llm_latency = self._latency_tracker.stop("llm")
+
+            self._event_bus.emit(
+                LLMRequestFinished(
+                    correlation_id=str(context.tick_id),
+                    specialist=self.name,
+                    status="SUCCESS",
+                    tokens_in=0,  # Telemetry extraction omitted for brevity
+                    tokens_out=0,
+                )
+            )
         except Exception:
             raw_response = None
-            llm_latency = self._latency_tracker.stop("llm")
+            self._event_bus.emit(
+                LLMRequestFinished(
+                    correlation_id=str(context.tick_id),
+                    specialist=self.name,
+                    status="ERROR",
+                    tokens_in=0,
+                    tokens_out=0,
+                )
+            )
 
         # 4. Validate Structured Output
+        self._event_bus.emit(
+            ValidationStarted(correlation_id=str(context.tick_id), specialist=self.name)
+        )
+
         parsed = None
         if raw_response:
             parsed = StructuredOutputValidator.validate(
                 raw_response, self._get_schema()
             )
 
-        total_latency = self._latency_tracker.stop("total")
-        finished_at = datetime.utcnow().isoformat() + "Z"
+        self._event_bus.emit(
+            ValidationFinished(
+                correlation_id=str(context.tick_id),
+                specialist=self.name,
+                success=bool(parsed),
+            )
+        )
 
         if not parsed:
             # Fallback to FAILED (Execution/Parsing Failure)
-            metrics = SpecialistMetrics(
-                specialist=self.name,
-                started_at=started_at,
-                finished_at=finished_at,
-                latency_ms=total_latency,
-                tokens_in=0,  # Could pull from API response if accessible
-                tokens_out=0,
-                cache_hit=False,
-                status=SpecialistStatus.FAILED.value,
-            )
-            self._pipeline_state.metrics.setdefault(str(context.tick_id), []).append(
-                metrics
-            )
             self._pipeline_state.failed_specialists.add(self.name)
+
+            self._event_bus.emit(
+                SpecialistFinished(
+                    correlation_id=str(context.tick_id),
+                    specialist=self.name,
+                    evidence_cycle=context.tick_id,
+                    status=SpecialistStatus.FAILED.value,
+                    confidence=0.0,
+                )
+            )
 
             return AgentOutput(
                 agent_name=self.name,
@@ -149,8 +215,8 @@ class LiveBaseSpecialist(BaseAgent):
         # 5. Overwrite tracking fields on parsed
         parsed.specialist = self.name
         parsed.prompt_version = self._prompt_version
-        parsed.latency_ms = llm_latency
         parsed.cache_hit = False
+        parsed.latency_ms = 0  # Handled by EventBus now out of band
 
         # 6. Cache the valid result
         self._cache_manager.set(
@@ -162,23 +228,18 @@ class LiveBaseSpecialist(BaseAgent):
         )
 
         # 7. Metrics
-        metrics = SpecialistMetrics(
-            specialist=self.name,
-            started_at=started_at,
-            finished_at=finished_at,
-            latency_ms=total_latency,
-            tokens_in=0,
-            tokens_out=0,
-            cache_hit=False,
-            status=parsed.status.value,
-        )
-        self._pipeline_state.metrics.setdefault(str(context.tick_id), []).append(
-            metrics
-        )
         self._pipeline_state.completed_specialists.add(self.name)
-
-        # 8. Compute Confidence & Return Standardized Output
         confidence = compute_confidence(parsed.confidence_reason, parsed.finding)
+
+        self._event_bus.emit(
+            SpecialistFinished(
+                correlation_id=str(context.tick_id),
+                specialist=self.name,
+                evidence_cycle=context.tick_id,
+                status=parsed.status.value,
+                confidence=confidence,
+            )
+        )
 
         return AgentOutput(
             agent_name=self.name, confidence=confidence, findings=parsed.finding

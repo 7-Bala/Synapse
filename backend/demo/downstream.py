@@ -21,46 +21,40 @@ class DownstreamSystemSimulator:
         self, cycle_id: int, consensus: ConsensusOutput
     ) -> List[Dict[str, str]]:
         """Determines the state of downstream systems based on the consensus."""
-        results = []
 
-        # We simulate the panic of enterprise systems during early uncertainty/contradiction
-        # and the stabilization once consensus is reached.
         is_panic = cycle_id < 4 and consensus.confidence < 0.8
         is_recovering = cycle_id == 4
 
+        state_key = (
+            "panic" if is_panic else "recovering" if is_recovering else "nominal"
+        )
+
+        states = {
+            "Fuel Procurement": {
+                "panic": "PANIC BUYING - Spot Market (+400% Markup)",
+                "recovering": "HALTING SPOT BUYS - Re-evaluating",
+                "nominal": "NOMINAL - Long term contracts active",
+            },
+            "Route Optimizer": {
+                "panic": "REROUTING - Avoiding Suez Canal (+14 days)",
+                "recovering": "CANCELING REROUTE - Holding position",
+                "nominal": "NOMINAL - Standard routing active",
+            },
+            "Insurance Pricing": {
+                "panic": "PREMIUM SURGE - High Risk Zone Triggered",
+                "recovering": "PREMIUM RECALCULATING",
+                "nominal": "NOMINAL - Standard risk profile",
+            },
+            "Scheduling Engine": {
+                "panic": "CASCADE DELAY - Port slots missed",
+                "recovering": "RESCHEDULING - Attempting slot recovery",
+                "nominal": "NOMINAL - On schedule",
+            },
+        }
+
+        results = []
         for system in self.systems:
-            if system == "Fuel Procurement":
-                if is_panic:
-                    status = "PANIC BUYING - Spot Market (+400% Markup)"
-                elif is_recovering:
-                    status = "HALTING SPOT BUYS - Re-evaluating"
-                else:
-                    status = "NOMINAL - Long term contracts active"
-
-            elif system == "Route Optimizer":
-                if is_panic:
-                    status = "REROUTING - Avoiding Suez Canal (+14 days)"
-                elif is_recovering:
-                    status = "CANCELING REROUTE - Holding position"
-                else:
-                    status = "NOMINAL - Standard routing active"
-
-            elif system == "Insurance Pricing":
-                if is_panic:
-                    status = "PREMIUM SURGE - High Risk Zone Triggered"
-                elif is_recovering:
-                    status = "PREMIUM RECALCULATING"
-                else:
-                    status = "NOMINAL - Standard risk profile"
-
-            elif system == "Scheduling Engine":
-                if is_panic:
-                    status = "CASCADE DELAY - Port slots missed"
-                elif is_recovering:
-                    status = "RESCHEDULING - Attempting slot recovery"
-                else:
-                    status = "NOMINAL - On schedule"
-
+            status = states.get(system, {}).get(state_key, "UNKNOWN")
             results.append({"system": system, "status": status})
 
         return results

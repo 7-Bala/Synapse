@@ -1,0 +1,14 @@
+# Ruff configuration for Synapse CI Guardrails
+
+[lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "C90", # mccabe complexity
+]
+ignore = ["E501"]
+
+[lint.mccabe]
+# Flag errors (`C901`) for functions with a complexity level greater than 10.
+max-complexity = 10
