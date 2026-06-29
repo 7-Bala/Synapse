@@ -4,6 +4,6 @@ import { navigation } from '@/config/navigation'
 export function useCurrentNavItem() {
   const location = useLocation()
   return navigation.find((n) =>
-    n.path === '/' ? location.pathname === '/' : location.pathname.startsWith(n.path),
+    n.route === '/' ? location.pathname === '/' : location.pathname.startsWith(n.route),
   )
 }

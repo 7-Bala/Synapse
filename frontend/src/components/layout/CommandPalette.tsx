@@ -26,7 +26,7 @@ export function CommandPalette() {
     const q = query.toLowerCase()
     return navigation.filter(
       (item) =>
-        item.label.toLowerCase().includes(q) ||
+        item.title.toLowerCase().includes(q) ||
         item.id.toLowerCase().includes(q),
     )
   }, [query])
@@ -63,7 +63,7 @@ export function CommandPalette() {
         setSelectedIndex((i) => Math.max(i - 1, 0))
       } else if (event.key === 'Enter' && filtered[selectedIndex]) {
         event.preventDefault()
-        execute(filtered[selectedIndex].path)
+        execute(filtered[selectedIndex].route)
       }
     }
 
@@ -119,7 +119,7 @@ export function CommandPalette() {
                       <li key={item.id} role="option" aria-selected={index === selectedIndex}>
                         <button
                           type="button"
-                          onClick={() => execute(item.path)}
+                          onClick={() => execute(item.route)}
                           onMouseEnter={() => setSelectedIndex(index)}
                           className={cn(
                             'flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left transition-colors',
@@ -129,7 +129,7 @@ export function CommandPalette() {
                           )}
                         >
                           <Icon className="size-4 shrink-0" />
-                          <span className="flex-1">{item.label}</span>
+                          <span className="flex-1">{item.title}</span>
                           <kbd className="kbd text-2xs">{item.shortcut}</kbd>
                         </button>
                       </li>
