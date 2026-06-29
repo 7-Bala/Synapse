@@ -26,8 +26,8 @@ export function WorkspaceDock(_props: WorkspaceDockProps) {
     <div className="flex flex-col h-full w-[240px] bg-background-dark border-r border-border shrink-0 py-4 z-50 overflow-y-auto overflow-x-hidden">
       {/* Brand Header */}
       <div className="flex items-center gap-3 px-6 mb-8 relative group">
-        <div className="flex items-center justify-center size-8 rounded-[6px] relative overflow-hidden">
-          <img src="/logo.png" alt="Synapse Logo" className="w-full h-full object-contain" />
+        <div className="flex items-center justify-center size-8 rounded-[6px] relative">
+          <img src="/logo.png" alt="Synapse Logo" className="w-full h-full object-contain mix-blend-screen" />
           {/* Glow effect */}
           <div className="absolute inset-0 bg-accent/20 blur-md rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
         </div>

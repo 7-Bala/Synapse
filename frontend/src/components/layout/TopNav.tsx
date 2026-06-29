@@ -10,7 +10,7 @@ export function WorkspaceHeader({ onOpenCommandPalette }: WorkspaceHeaderProps) 
       {/* Context Area */}
       <div className="flex items-center gap-4 text-sm font-sans">
         <div className="flex items-center gap-2 pr-4 border-r border-border-subtle">
-          <img src="/logo.png" alt="Synapse Logo" className="h-6 object-contain" />
+          <img src="/logo.png" alt="Synapse Logo" className="h-6 object-contain mix-blend-screen" />
           <span className="font-semibold text-foreground tracking-tight">Synapse</span>
         </div>
 

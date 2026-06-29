@@ -29,7 +29,7 @@ export function Breadcrumbs({ className, items }: BreadcrumbsProps) {
                 to={crumb.path}
                 className="flex items-center gap-1.5 text-muted hover:text-foreground transition-colors truncate"
               >
-                {index === 0 && <img src="/logo.png" alt="Synapse Logo" className="size-3.5 object-contain shrink-0" />}
+                {index === 0 && <img src="/logo.png" alt="Synapse Logo" className="size-3.5 object-contain mix-blend-screen shrink-0" />}
                 <span className="truncate">{crumb.label}</span>
               </Link>
             ) : (

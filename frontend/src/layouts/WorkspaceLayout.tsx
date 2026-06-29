@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { Surface } from '@/design-system/primitives/Surface';
 import { Stack } from '@/design-system/primitives/Stack';
 import { ScrollableArea } from '@/design-system/primitives/ScrollableArea';
-import { AlertCircle, Loader2, WifiOff, Inbox, Activity } from 'lucide-react';
+import { AlertCircle, WifiOff, Inbox, Activity } from 'lucide-react';
 import { useExecutionStore } from '@/stores/executionStore';
 import { cn } from '@/lib/utils';
 
@@ -36,8 +36,8 @@ export function WorkspaceLayout({
       case 'loading':
         return (
           <div className="flex flex-col items-center justify-center h-full text-muted">
-            <Loader2 className="size-8 animate-spin mb-4 text-accent" />
-            <p className="text-sm">Loading workspace...</p>
+            <img src="/logo.png" alt="Synapse Logo" className="size-12 object-contain mix-blend-screen mb-4 animate-pulse" />
+            <p className="text-sm font-medium text-foreground tracking-tight">Loading workspace...</p>
           </div>
         );
       case 'disconnected':
