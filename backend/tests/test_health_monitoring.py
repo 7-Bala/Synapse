@@ -145,8 +145,9 @@ def test_missing_lock_manager(health_artifacts):
     monitor = HealthMonitor(str(artifacts_dir))
 
     lock_health = monitor.probe_lock_manager()
-    assert lock_health.status == HealthStatus.UNKNOWN
-    assert lock_health.message == "Concurrent Safety phase not implemented."
+    assert lock_health.status == HealthStatus.HEALTHY
+    assert lock_health.message == "Concurrent Safety phase intentionally deferred."
+    assert lock_health.metadata["deferred"] is True
 
 
 def test_missing_provenance(health_artifacts):
@@ -368,9 +369,10 @@ def test_json_schema_validation(health_artifacts):
             recovery_json = json.load(f)
             assert "total_recoveries" in recovery_json
 
-        with open(artifacts_dir / "current" / "resource_report.json") as f:
-            resource_json = json.load(f)
-            assert "cache_size_bytes" in resource_json
+            with open(artifacts_dir / "current" / "resource_report.json") as f:
+                resource_json = json.load(f)
+                assert "filesystem" in resource_json
+                assert "cache_size_bytes" in resource_json["filesystem"]
 
 
 def test_historical_archive(health_artifacts):

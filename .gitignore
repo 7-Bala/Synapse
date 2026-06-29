@@ -7,3 +7,18 @@ __pycache__/
 node_modules/
 dist/
 build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+*.log
+
+# Generated runtime state
+artifacts/
+cache/
+metrics/
+benchmark_report.json
+backend/evaluation_output/
+backend/evaluation_summary.md
+backend/golden_update_report.md
+frontend/public/events.json

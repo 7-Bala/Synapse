@@ -182,3 +182,54 @@ class CircuitFailure(BaseEvent):
 
 class CircuitRecovered(BaseEvent):
     dependency: str
+
+
+# --- Failure Injection Events ---
+
+
+class FailureScenarioStarted(BaseEvent):
+    """Emitted when a failure injection scenario begins."""
+
+    scenario_name: str
+    profile_name: str
+    fault_count: int
+
+
+class FailureScenarioCompleted(BaseEvent):
+    """Emitted when a failure injection scenario ends."""
+
+    scenario_name: str
+    profile_name: str
+    injected_count: int
+    recovered_count: int
+    duration_ms: float
+
+
+class FailureInjected(BaseEvent):
+    """Emitted when a fault is actively injected into a component."""
+
+    component: str
+    fault_type: str
+    occurrence: int
+
+
+class FailureRecovered(BaseEvent):
+    """Emitted when a component recovers after an injected failure."""
+
+    component: str
+    fault_type: str
+
+
+class FailureIgnored(BaseEvent):
+    """Emitted when a fault was configured but not triggered (e.g., count exhausted)."""
+
+    component: str
+    fault_type: str
+    reason: str
+
+
+class FailureBypassed(BaseEvent):
+    """Emitted when injection is disabled and a component bypasses the injector."""
+
+    component: str
+    fault_type: str

@@ -1,15 +1,22 @@
 """Configuration settings for Synapse."""
 
 from typing import Optional
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     """Centralized configuration via pydantic-settings."""
 
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
+
     # Provider & Model
     cerebras_api_key: Optional[str] = None
     default_model: str = "llama3.1-8b"
+    enable_live_provider: bool = False
 
     # Timeouts & Retries
     llm_timeout_seconds: float = 10.0
@@ -50,11 +57,6 @@ class Settings(BaseSettings):
     artifacts_dir: str = "/Users/bala/Documents/Synapse/artifacts"
     golden_dir: str = "/Users/bala/Documents/Synapse/backend/golden"
     metrics_dir: str = "/Users/bala/Documents/Synapse/backend/observability/metrics"
-
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        extra = "ignore"
 
 
 settings = Settings()

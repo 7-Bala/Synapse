@@ -22,6 +22,41 @@ from observability.metrics_collector import MetricsCollector
 from health.reports import HealthReporter
 
 
+def _build_specialist_outputs(
+    events: list[dict[str, Any]],
+) -> dict[str, list[dict[str, Any]]]:
+    outputs: dict[str, list[dict[str, Any]]] = {}
+    for event in events:
+        if event.get("event_type") != "SpecialistCompleted":
+            continue
+        cycle_key = str(event["evidence_cycle"])
+        outputs.setdefault(cycle_key, []).append(
+            {
+                "specialist": event["specialist"],
+                "confidence": event["confidence"],
+                "findings": event["findings"],
+            }
+        )
+    return outputs
+
+
+def _build_decision_trace(
+    events: list[dict[str, Any]],
+) -> dict[str, list[dict[str, Any]]]:
+    traces: dict[str, list[dict[str, Any]]] = {}
+    for event in events:
+        if event.get("event_type") == "ConsensusUpdated":
+            cycle_key = str(event["evidence_cycle"])
+            traces.setdefault(cycle_key, []).append(
+                {
+                    "decision": event["decision"],
+                    "confidence": event["confidence"],
+                    "human_review_required": event["human_review_required"],
+                }
+            )
+    return traces
+
+
 def get_next_version(artifacts_dir: str, prefix: str) -> int:
     """Gets the next version number for artifacts."""
     version = 1
@@ -54,7 +89,7 @@ async def main() -> None:
     event_bus = EventBus.get_instance()
     metrics_collector = MetricsCollector(output_dir=metrics_dir, event_bus=event_bus)
     event_bus.subscribe(metrics_collector.handle_event)
-    
+
     # Initialize reporter early so ResourceMonitor can track events
     reporter = HealthReporter(artifacts_dir)
 
@@ -113,7 +148,12 @@ async def main() -> None:
         recorder.export_timeline(temp_events_path)
         with open(temp_events_path, "r", encoding="utf-8") as f:
             events_content = f.read()
+        timeline_events = json.loads(events_content)
         events_hash = w.write_text("events.json", events_content)
+        w.write_json(
+            "specialist_outputs.json", _build_specialist_outputs(timeline_events)
+        )
+        w.write_json("decision_trace.json", _build_decision_trace(timeline_events))
 
         # Metrics
         metrics_hash = w.write_json("metrics.json", metrics_collector.metrics)

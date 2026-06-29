@@ -2,6 +2,7 @@ import os
 import json
 import asyncio
 import sys
+from datetime import datetime, timezone
 
 # Ensure backend is in path
 base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -167,6 +168,25 @@ async def run_evaluation():  # noqa: C901
 
     rg = ReportGenerator(backend_dir)
     md_file = rg.generate_markdown(metrics_file)
+    summary_payload = {
+        "passed": metrics.metrics["overall_status"] != "FAIL",
+        "overall_status": metrics.metrics["overall_status"],
+        "pass_rate": metrics.metrics["pass_rate"],
+        "failures": metrics.metrics["failures"],
+        "warnings": metrics.metrics["warnings"],
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "report_file": os.path.basename(metrics_file),
+        "summary_markdown": os.path.basename(md_file),
+    }
+    summary_file = os.path.join(
+        backend_dir,
+        "evaluation_output",
+        "evaluation_summary_"
+        + datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S_%f")
+        + ".json",
+    )
+    with open(summary_file, "w", encoding="utf-8") as f:
+        json.dump(summary_payload, f, indent=2)
     print(f"Evaluation complete. JSON at {metrics_file}, MD at {md_file}")
 
     if metrics.metrics["overall_status"] == "FAIL":

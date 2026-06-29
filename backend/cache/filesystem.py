@@ -22,6 +22,9 @@ from observability.events import (
     CacheWrite,
 )
 from .provider import CacheProvider
+from testing.failure_injection import FailureInjector, FaultType
+
+_INJECTOR_COMPONENT = "FilesystemCache"
 
 
 class FilesystemCacheProvider(CacheProvider):
@@ -94,7 +97,7 @@ class FilesystemCacheProvider(CacheProvider):
     ) -> Optional[Dict[str, Any]]:  # noqa: C901
         """Retrieves a cached output if it exists and passes all validation gates."""
 
-        def _execute_get() -> Optional[Dict[str, Any]]:
+        def _execute_get() -> Optional[Dict[str, Any]]:  # noqa: C901
             key = self._generate_key(
                 specialist, prompt_version, evidence_hash, scenario
             )
@@ -103,6 +106,25 @@ class FilesystemCacheProvider(CacheProvider):
             if not filepath.exists():
                 self._emit(CacheMiss, key)
                 return None
+
+            # --- Failure Injection ---
+            _inj = FailureInjector.get_instance()
+            if _inj.should_fail(_INJECTOR_COMPONENT, FaultType.CACHE_READ_FAILURE):
+                self._emit(CacheCorrupted, key)
+                return None
+            if _inj.should_fail(_INJECTOR_COMPONENT, FaultType.CACHE_CORRUPTION):
+                filepath.unlink(missing_ok=True)
+                self._emit(CacheCorrupted, key)
+                return None
+            if _inj.should_fail(_INJECTOR_COMPONENT, FaultType.CACHE_CHECKSUM_FAILURE):
+                filepath.unlink(missing_ok=True)
+                self._emit(CacheCorrupted, key)
+                return None
+            if _inj.should_fail(_INJECTOR_COMPONENT, FaultType.CACHE_EXPIRED):
+                filepath.unlink(missing_ok=True)
+                self._emit(CacheExpired, key)
+                return None
+            # --- End Failure Injection ---
 
             try:
                 # 1. Read File (wrapped in RetryPolicy)
@@ -211,6 +233,12 @@ class FilesystemCacheProvider(CacheProvider):
             }
 
             envelope = {"metadata": metadata, "payload": data}
+
+            # --- Failure Injection ---
+            _inj = FailureInjector.get_instance()
+            if _inj.should_fail(_INJECTOR_COMPONENT, FaultType.CACHE_WRITE_FAILURE):
+                return  # silently drop the write — simulates I/O failure
+            # --- End Failure Injection ---
 
             content = json.dumps(envelope)
             self.retry_policy.execute(

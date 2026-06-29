@@ -8,6 +8,9 @@ from pathlib import Path
 from typing import Any, Callable
 
 from core.circuit_breaker import CircuitBreaker
+from testing.failure_injection import FailureInjector, FaultType
+
+_INJECTOR_COMPONENT = "ArtifactWriter"
 
 
 class TransactionalArtifactWriter:
@@ -36,6 +39,14 @@ class TransactionalArtifactWriter:
 
     def write_json(self, filename: str, content: Any) -> str:
         """Writes JSON content to the staging directory and returns its SHA-256 hash."""
+        # --- Failure Injection ---
+        if FailureInjector.get_instance().should_fail(
+            _INJECTOR_COMPONENT, FaultType.ARTIFACT_WRITE_INTERRUPTION
+        ):
+            raise OSError("[FailureInjector] Simulated artifact write interruption")
+        # --- End Failure Injection ---
+
+        self.staging_dir.mkdir(parents=True, exist_ok=True)
         filepath = self.staging_dir / filename
 
         # Format as string if it isn't already
@@ -51,6 +62,7 @@ class TransactionalArtifactWriter:
 
     def write_text(self, filename: str, content_str: str) -> str:
         """Writes string content to the staging directory and returns its SHA-256 hash."""
+        self.staging_dir.mkdir(parents=True, exist_ok=True)
         filepath = self.staging_dir / filename
         with open(filepath, "w", encoding="utf-8") as f:
             f.write(content_str)
@@ -76,6 +88,16 @@ class TransactionalArtifactWriter:
 
     def commit(self) -> None:
         """Validates staging and atomically promotes it to current."""
+        # --- Failure Injection ---
+        if FailureInjector.get_instance().should_fail(
+            _INJECTOR_COMPONENT, FaultType.ARTIFACT_COMMIT_INTERRUPTION
+        ):
+            self.rollback()
+            raise OSError("[FailureInjector] Simulated artifact commit interruption")
+        # --- End Failure Injection ---
+
+        self.staging_dir.mkdir(parents=True, exist_ok=True)
+
         # Validate that all required files exist
         required_files = [
             "events.json",

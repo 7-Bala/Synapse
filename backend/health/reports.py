@@ -121,6 +121,37 @@ class HealthReporter:
         self.generate_failure_report(now_str)
         self.generate_recovery_report(now_str)
         self.generate_resource_report(now_str)
+        self.generate_failure_injection_report(now_str)
+
+    def generate_failure_injection_report(self, now_str: str) -> None:
+        """Generates a failure injection report from current FailureInjector state."""
+        from testing.failure_injection import FailureInjector  # noqa: PLC0415
+
+        injector = FailureInjector.get_instance()
+        stats = injector.statistics()
+
+        report = {
+            "generated_at": now_str,
+            "active_profile": stats.active_profile,
+            "injection_enabled": stats.enabled,
+            "total_faults_configured": stats.total_faults_configured,
+            "total_faults_triggered": stats.total_faults_triggered,
+            "total_recoveries": stats.total_recoveries,
+            "fault_details": stats.fault_details,
+            "deterministic": True,
+        }
+
+        # Write to current
+        report_path = self.current_dir / "failure_injection_report.json"
+        with open(report_path, "w", encoding="utf-8") as f:
+            json.dump(report, f, indent=2)
+
+        # Archive under artifacts/archive/failure/ with timestamp — never overwrite
+        failure_archive_dir = self.artifacts_dir / "archive" / "failure"
+        failure_archive_dir.mkdir(parents=True, exist_ok=True)
+        ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S_%f")
+        archive_path = failure_archive_dir / f"failure_injection_{ts}.json"
+        shutil.copy2(report_path, archive_path)
 
     def archive_snapshot(self) -> None:
         """Creates a timestamped archive of the current health reports."""

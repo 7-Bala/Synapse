@@ -19,7 +19,7 @@ class EventBus:
         self._subscribers: List[Callable[[BaseEvent], None]] = []
         self.emitted_count = 0
         self.dropped_count = 0
-        
+
     def queue_size(self) -> int:
         return 0  # Synchronous bus has no persistent queue
 
@@ -47,6 +47,18 @@ class EventBus:
         self.emitted_count += 1
         for subscriber in self._subscribers:
             try:
+                # --- Failure Injection (EventBus continues after subscriber failure) ---
+                from testing.failure_injection import (
+                    FailureInjector,
+                    FaultType,
+                )  # noqa: PLC0415
+
+                if FailureInjector.get_instance().should_fail(
+                    "EventBus", FaultType.EVENTBUS_SUBSCRIBER_FAILURE
+                ):
+                    self.dropped_count += 1
+                    continue  # skip this subscriber, bus keeps running
+                # --- End Failure Injection ---
                 subscriber(event)
             except Exception:
                 # Observability must never crash or delay execution

@@ -16,6 +16,9 @@ from observability.events import (
     CircuitFailure,
     CircuitRecovered,
 )
+from testing.failure_injection import FailureInjector, FaultType
+
+_INJECTOR_COMPONENT = "CircuitBreaker"
 
 
 class CircuitState(Enum):
@@ -258,6 +261,18 @@ class CircuitBreaker:
     def execute(self, operation: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
         """Executes the operation through the circuit breaker."""
         current_time = time.time()
+
+        # --- Failure Injection ---
+        _inj = FailureInjector.get_instance()
+        if _inj.should_fail(_INJECTOR_COMPONENT, FaultType.CIRCUIT_FORCE_OPEN):
+            with self._lock:
+                self._transition_to_open(
+                    reason="[FailureInjector] Forced OPEN", current_time=current_time
+                )
+        elif _inj.should_fail(_INJECTOR_COMPONENT, FaultType.CIRCUIT_FORCE_HALF_OPEN):
+            with self._lock:
+                self._transition_to_half_open(current_time)
+        # --- End Failure Injection ---
 
         self._before_execute(current_time)
 
