@@ -18,6 +18,15 @@ class Settings(BaseSettings):
     retry_max_delay_ms: float = 10000.0
     retry_jitter_enabled: bool = True
 
+    # Circuit Breaker
+    circuit_breaker_enabled: bool = True
+    circuit_breaker_failure_threshold: int = 5
+    circuit_breaker_success_threshold: int = 2
+    circuit_breaker_sliding_window_seconds: float = 60.0
+    circuit_breaker_recovery_timeout_seconds: float = 30.0
+    circuit_breaker_half_open_max_requests: int = 3
+    circuit_breaker_half_open_success_threshold: int = 2
+
     # Storage Paths
     base_dir: str = "/Users/bala/Documents/Synapse"
     cache_dir: str = "/Users/bala/Documents/Synapse/.cache"

@@ -1,5 +1,6 @@
 from typing import Dict, Any
 
+
 class ScenarioLoader:
     def __init__(self, scenarios_dir: str):
         self.scenarios_dir = scenarios_dir

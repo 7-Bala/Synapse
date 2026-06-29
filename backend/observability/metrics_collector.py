@@ -115,7 +115,7 @@ class MetricsCollector:
         trace["confidence_produced"] = event.confidence
         self.metrics.setdefault(event.correlation_id, []).append(trace)
 
-    def handle_event(self, event: BaseEvent) -> None:
+    def handle_event(self, event: BaseEvent) -> None:  # noqa: C901
         """Process an event out-of-band to compute metrics."""
         specialist = getattr(event, "specialist", None)
         if not specialist:

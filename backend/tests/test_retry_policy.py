@@ -3,9 +3,8 @@
 import httpx
 import sys
 import os
-from unittest.mock import Mock, patch
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from core.retry_policy import RetryPolicy, RetryTimeoutException
 
 
@@ -43,6 +42,7 @@ def test_success_after_retry():
     policy.max_delay = 0.0
 
     attempts = 0
+
     def op():
         nonlocal attempts
         attempts += 1
@@ -114,6 +114,7 @@ def test_exponential_backoff_calculation():
     assert policy.calculate_delay(1) == 2.0
     assert policy.calculate_delay(2) == 4.0
     assert policy.calculate_delay(3) == 5.0  # maxes out
+
 
 if __name__ == "__main__":
     test_success_without_retry()

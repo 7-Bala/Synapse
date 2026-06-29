@@ -8,6 +8,7 @@ from cerebras.cloud.sdk import Cerebras
 from dotenv import load_dotenv
 
 from core.retry_policy import RetryPolicy
+from core.circuit_breaker import CircuitBreaker
 from observability.event_bus import EventBus
 from config.settings import settings
 
@@ -25,6 +26,7 @@ class CerebrasService:
         self._client = Cerebras(api_key=api_key)
         self.model_name = model_name
         self._retry_policy = RetryPolicy(EventBus.get_instance())
+        self._circuit_breaker = CircuitBreaker("CerebrasProvider")
 
     def generate_structured_response(
         self,
@@ -60,6 +62,8 @@ class CerebrasService:
             return response.choices[0].message.content  # type: ignore
 
         try:
-            return self._retry_policy.execute(request_id, _execute_call)
+            return self._retry_policy.execute(
+                request_id, self._circuit_breaker.execute, _execute_call
+            )
         except Exception:
             return None

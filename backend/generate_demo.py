@@ -97,100 +97,106 @@ async def main() -> None:
     # Initialize the Transactional Writer
     writer = TransactionalArtifactWriter(artifacts_dir)
 
-    # 3. Collect Leaf Artifacts Content
-    # We no longer rely on dynamic version strings for the output files in artifacts
+    # 3. Collect Leaf Artifacts Content and Wrap in Transaction
+    temp_replay_id = "UNKNOWN"
+    temp_events_content = "[]"
+    temp_recorder_events = 0
 
-    # Events
-    temp_events_path = os.path.join(metrics_dir, "temp_events.json")
-    recorder.export_timeline(temp_events_path)
-    with open(temp_events_path, "r", encoding="utf-8") as f:
-        events_content = f.read()
-    events_hash = writer.write_text("events.json", events_content)
+    def _write_artifacts(w: TransactionalArtifactWriter) -> None:
+        nonlocal temp_replay_id, temp_events_content, temp_recorder_events
+        # Events
+        temp_events_path = os.path.join(metrics_dir, "temp_events.json")
+        recorder.export_timeline(temp_events_path)
+        with open(temp_events_path, "r", encoding="utf-8") as f:
+            events_content = f.read()
+        events_hash = w.write_text("events.json", events_content)
 
-    # Metrics
-    metrics_hash = writer.write_json("metrics.json", metrics_collector.metrics)
+        # Metrics
+        metrics_hash = w.write_json("metrics.json", metrics_collector.metrics)
 
-    # Prompt Bundle
-    prompt_bundle = prompt_loader.get_all_metadata()
-    prompt_bundle_hash = writer.write_json("prompt_bundle.json", prompt_bundle)
+        # Prompt Bundle
+        prompt_bundle = prompt_loader.get_all_metadata()
+        prompt_bundle_hash = w.write_json("prompt_bundle.json", prompt_bundle)
 
-    # Hashes already computed via the writer
+        # 5. Generate Manifest
+        manifest: Dict[str, Any] = {
+            "repository": provenance.get_git_metadata(),
+            "prompt_bundle_summary": {
+                "total_prompts": len(prompt_bundle),
+                "hash": prompt_bundle_hash,
+            },
+            "specialists": specialist_metadata,
+            "configuration": provenance.get_system_metadata(),
+            "runtime": provenance.get_runtime_metadata(),
+            "generation_duration_seconds": round(duration, 2),
+            "validation_results": {"status": "SUCCESS"},
+            "artifact_hashes": {
+                "events_json": events_hash,
+                "metrics_json": metrics_hash,
+                "prompt_bundle_json": prompt_bundle_hash,
+            },
+            "cache_statistics": {
+                "total_lookups": len(metrics_collector.metrics),
+                "hits": 0,
+                "misses": len(metrics_collector.metrics),
+            },
+            "replay_identifier": "PENDING",
+        }
 
-    # 5. Generate Manifest
-    manifest: Dict[str, Any] = {
-        "repository": provenance.get_git_metadata(),
-        "prompt_bundle_summary": {
-            "total_prompts": len(prompt_bundle),
-            "hash": prompt_bundle_hash,
-        },
-        "specialists": specialist_metadata,
-        "configuration": provenance.get_system_metadata(),
-        "runtime": provenance.get_runtime_metadata(),
-        "generation_duration_seconds": round(duration, 2),
-        "validation_results": {"status": "SUCCESS"},
-        "artifact_hashes": {
-            "events_json": events_hash,
-            "metrics_json": metrics_hash,
-            "prompt_bundle_json": prompt_bundle_hash,
-        },
-        "cache_statistics": {
-            "total_lookups": len(metrics_collector.metrics),
-            "hits": 0,
-            "misses": len(metrics_collector.metrics),
-        },
-        "replay_identifier": "PENDING",
-    }
+        # Create a deterministic copy of manifest to hash for Replay ID
+        manifest_for_hash = manifest.copy()
+        manifest_for_hash["runtime"] = {"isolated": True}
+        manifest_for_hash["generation_duration_seconds"] = 0.0
 
-    # Create a deterministic copy of manifest to hash for Replay ID
-    manifest_for_hash = manifest.copy()
-    manifest_for_hash["runtime"] = {"isolated": True}
-    manifest_for_hash["generation_duration_seconds"] = 0.0
+        # Also isolate metrics hash because it fluctuates with execution timing
+        artifact_hashes_copy = manifest_for_hash["artifact_hashes"].copy()
+        artifact_hashes_copy["metrics_json"] = "PENDING"
+        manifest_for_hash["artifact_hashes"] = artifact_hashes_copy
 
-    # Also isolate metrics hash because it fluctuates with execution timing
-    artifact_hashes_copy = manifest_for_hash["artifact_hashes"].copy()
-    artifact_hashes_copy["metrics_json"] = "PENDING"
-    manifest_for_hash["artifact_hashes"] = artifact_hashes_copy
+        manifest_content_for_hash = json.dumps(manifest_for_hash, indent=2)
+        manifest_hash_for_id = sha256_content(manifest_content_for_hash)
 
-    manifest_content_for_hash = json.dumps(manifest_for_hash, indent=2)
-    manifest_hash_for_id = sha256_content(manifest_content_for_hash)
+        # 6. Calculate Replay ID
+        replay_id_str = f"{events_hash}{manifest_hash_for_id}{prompt_bundle_hash}"
+        replay_id = sha256_content(replay_id_str)
 
-    # 6. Calculate Replay ID
-    replay_id_str = f"{events_hash}{manifest_hash_for_id}{prompt_bundle_hash}"
-    replay_id = sha256_content(replay_id_str)
+        # Update manifest with Replay ID (and rehash since we changed it)
+        manifest["replay_identifier"] = replay_id
+        manifest_content = json.dumps(manifest, indent=2)
+        manifest_hash = sha256_content(manifest_content)
 
-    # Update manifest with Replay ID (and rehash since we changed it)
-    manifest["replay_identifier"] = replay_id
-    manifest_content = json.dumps(manifest, indent=2)
-    manifest_hash = sha256_content(manifest_content)
+        # 7. Write Manifest
+        w.write_text("manifest.json", manifest_content)
 
-    # 7. Write Manifest
-    writer.write_text("manifest.json", manifest_content)
+        # 8. Generate Certificate
+        certificate = {
+            "replay_id": replay_id,
+            "manifest_hash": manifest_hash,
+            "manifest_version": "1.0",
+            "validator_version": "1.0",
+            "replay_hash": replay_id,  # Can be separate, but Replay ID is canonical
+            "generation_successful": True,
+            "deterministic": True,
+            "validation_passed": True,
+        }
 
-    # 8. Generate Certificate
-    certificate = {
-        "replay_id": replay_id,
-        "manifest_hash": manifest_hash,
-        "manifest_version": "1.0",
-        "validator_version": "1.0",
-        "replay_hash": replay_id,  # Can be separate, but Replay ID is canonical
-        "generation_successful": True,
-        "deterministic": True,
-        "validation_passed": True,
-    }
+        w.write_json("replay_certificate.json", certificate)
 
-    writer.write_json("replay_certificate.json", certificate)
+        # Save these values so they can be accessed outside
+        temp_replay_id = replay_id
+        temp_events_content = events_content
+        temp_recorder_events = len(recorder.events)
 
-    # Finalize the transaction
-    writer.commit()
+    writer.execute_transaction(_write_artifacts)
 
     # 9. Update frontend (legacy compatibility)
     frontend_events_path = os.path.join(base_dir, "frontend", "public", "events.json")
     with open(frontend_events_path, "w") as f:
-        f.write(events_content)
+        f.write(temp_events_content)
 
     print(f"\nSuccessfully generated transactional replay in {artifacts_dir}/current")
-    print(f"Total exported events: {len(recorder.events)}")
-    print(f"Replay ID: {replay_id}")
+    print(f"Total exported events: {temp_recorder_events}")
+    print(f"Replay ID: {temp_replay_id}")
     print("Manifest and Certificate created securely.\n")
 
 

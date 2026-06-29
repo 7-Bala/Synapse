@@ -1,5 +1,6 @@
 from typing import Any
 
+
 class ComparisonResult:
     def __init__(self, passed: bool, message: str, warning: bool = False):
         self.passed = passed
@@ -15,7 +16,7 @@ class ExactComparator:
         if expected != actual:
             return ComparisonResult(
                 False,
-                f"Exact match failed at {field_path}: expected '{expected}', got '{actual}'"
+                f"Exact match failed at {field_path}: expected '{expected}', got '{actual}'",
             )
         return ComparisonResult(True, f"Exact match passed at {field_path}")
 
@@ -24,7 +25,13 @@ class NumericComparator:
     """Level 2 - Numeric with tolerance"""
 
     @staticmethod
-    def compare(expected: float, actual: float, tolerance: float, field_path: str = "", is_percentage: bool = False) -> ComparisonResult:
+    def compare(
+        expected: float,
+        actual: float,
+        tolerance: float,
+        field_path: str = "",
+        is_percentage: bool = False,
+    ) -> ComparisonResult:
         if is_percentage:
             diff = abs(expected - actual)
             # if expected is 0, just use diff directly. If we want relative % error: (abs(e-a)/e)*100
@@ -32,14 +39,14 @@ class NumericComparator:
             if diff > tolerance:
                 return ComparisonResult(
                     False,
-                    f"Numeric drift exceeded at {field_path}: expected {expected}, got {actual} (diff {diff} > {tolerance})"
+                    f"Numeric drift exceeded at {field_path}: expected {expected}, got {actual} (diff {diff} > {tolerance})",
                 )
         else:
             diff = abs(expected - actual)
             if diff > tolerance:
                 return ComparisonResult(
                     False,
-                    f"Numeric drift exceeded at {field_path}: expected {expected}, got {actual} (diff {diff} > {tolerance})"
+                    f"Numeric drift exceeded at {field_path}: expected {expected}, got {actual} (diff {diff} > {tolerance})",
                 )
         return ComparisonResult(True, f"Numeric check passed at {field_path}")
 
@@ -59,12 +66,14 @@ class StructuralComparator:
             if missing or extra:
                 return ComparisonResult(
                     False,
-                    f"Structural drift at {field_path}: missing keys {missing}, extra keys {extra}"
+                    f"Structural drift at {field_path}: missing keys {missing}, extra keys {extra}",
                 )
 
             # Recurse for nested dictionaries
             for k in expected_keys:
-                res = StructuralComparator.compare(expected[k], actual[k], f"{field_path}.{k}")
+                res = StructuralComparator.compare(
+                    expected[k], actual[k], f"{field_path}.{k}"
+                )
                 if not res.passed:
                     return res
 
@@ -74,10 +83,12 @@ class StructuralComparator:
             if len(expected) != len(actual):
                 return ComparisonResult(
                     False,
-                    f"Structural drift at {field_path}: expected {len(expected)} items, got {len(actual)}"
+                    f"Structural drift at {field_path}: expected {len(expected)} items, got {len(actual)}",
                 )
             # Basic list structural comparison could just verify length and types
-            return ComparisonResult(True, f"Structural check passed at {field_path} (list sizes match)")
+            return ComparisonResult(
+                True, f"Structural check passed at {field_path} (list sizes match)"
+            )
 
         else:
             # For scalar values in structural check, we don't care about the exact text, just that they exist
@@ -94,6 +105,6 @@ class SemanticComparator:
             return ComparisonResult(
                 True,  # Never blocks
                 f"Semantic difference detected at {field_path} (Stub - Warning only)",
-                warning=True
+                warning=True,
             )
         return ComparisonResult(True, f"Semantic check passed at {field_path}")

@@ -2,6 +2,7 @@ import json
 import os
 from typing import Any, Dict
 
+
 class GoldenDataset:
     def __init__(self, golden_dir: str):
         self.golden_dir = golden_dir

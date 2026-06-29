@@ -2,6 +2,7 @@ import json
 import os
 from typing import Dict, Any
 
+
 class EvaluationMetrics:
     def __init__(self, output_dir: str):
         self.output_dir = output_dir
@@ -16,7 +17,7 @@ class EvaluationMetrics:
             "performance_regressions": 0,
             "hash_regressions": 0,
             "failures": [],
-            "warnings": []
+            "warnings": [],
         }
 
     def record_failure(self, category: str, message: str) -> None:

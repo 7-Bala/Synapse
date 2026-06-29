@@ -10,7 +10,8 @@ backend_dir = os.path.join(base_dir, "backend")
 if backend_dir not in sys.path:
     sys.path.insert(0, backend_dir)
 
-from generate_demo import main as generate_demo_main
+from generate_demo import main as generate_demo_main  # noqa: E402
+
 
 async def run_benchmark(iterations: int):
     print(f"--- Starting Benchmark Runner ({iterations} iterations) ---")
@@ -27,7 +28,9 @@ async def run_benchmark(iterations: int):
             latencies.append(latency)
 
             # Grab replay id
-            manifest_path = os.path.join(base_dir, "artifacts", "current", "manifest.json")
+            manifest_path = os.path.join(
+                base_dir, "artifacts", "current", "manifest.json"
+            )
             if os.path.exists(manifest_path):
                 with open(manifest_path, "r") as f:
                     manifest = json.load(f)
@@ -41,9 +44,13 @@ async def run_benchmark(iterations: int):
     # Calculate stats
     avg_latency = sum(latencies) / len(latencies) if latencies else 0.0
     latencies.sort()
-    median_latency = latencies[len(latencies)//2] if latencies else 0.0
-    p95_latency = latencies[int(len(latencies)*0.95)] if latencies else 0.0
-    std_dev = (sum((lat - avg_latency) ** 2 for lat in latencies) / len(latencies)) ** 0.5 if latencies else 0.0
+    median_latency = latencies[len(latencies) // 2] if latencies else 0.0
+    p95_latency = latencies[int(len(latencies) * 0.95)] if latencies else 0.0
+    std_dev = (
+        (sum((lat - avg_latency) ** 2 for lat in latencies) / len(latencies)) ** 0.5
+        if latencies
+        else 0.0
+    )
     determinism_rate = (1.0 / len(replay_ids)) if replay_ids else 0.0
     failure_rate = failures / iterations
 
@@ -57,7 +64,7 @@ async def run_benchmark(iterations: int):
         "failure_rate": failure_rate,
         "cache_hit_ratio": 0.0,  # Stubbed out unless we mock cache stats
         "cache_miss_ratio": 0.0,
-        "memory_usage": 0.0      # Stubbed out unless using psutil
+        "memory_usage": 0.0,  # Stubbed out unless using psutil
     }
 
     out_path = os.path.join(base_dir, "benchmark_report.json")
@@ -67,9 +74,12 @@ async def run_benchmark(iterations: int):
     print(f"Benchmark complete. Report saved to {out_path}")
     print(json.dumps(report, indent=2))
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run benchmarks")
-    parser.add_argument("--iterations", type=int, default=10, help="Number of iterations")
+    parser.add_argument(
+        "--iterations", type=int, default=10, help="Number of iterations"
+    )
     args = parser.parse_args()
 
     asyncio.run(run_benchmark(args.iterations))

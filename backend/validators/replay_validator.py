@@ -100,12 +100,16 @@ class ReplayValidator:
             artifact_hashes_copy["metrics_json"] = "PENDING"
             manifest_copy["artifact_hashes"] = artifact_hashes_copy
 
-        intermediate_manifest_hash = hashlib.sha256(json.dumps(manifest_copy, indent=2).encode("utf-8")).hexdigest()
+        intermediate_manifest_hash = hashlib.sha256(
+            json.dumps(manifest_copy, indent=2).encode("utf-8")
+        ).hexdigest()
 
         computed_events_hash = sha256_file(os.path.join(cert_dir, "events.json"))
         computed_prompt_hash = sha256_file(os.path.join(cert_dir, "prompt_bundle.json"))
 
-        replay_id_str = f"{computed_events_hash}{intermediate_manifest_hash}{computed_prompt_hash}"
+        replay_id_str = (
+            f"{computed_events_hash}{intermediate_manifest_hash}{computed_prompt_hash}"
+        )
         computed_replay_id = hashlib.sha256(replay_id_str.encode("utf-8")).hexdigest()
 
         if computed_replay_id != manifest.get("replay_identifier"):
@@ -142,7 +146,9 @@ if __name__ == "__main__":
     if os.path.exists(archive_dir):
         for replay_name in os.listdir(archive_dir):
             r_dir = os.path.join(archive_dir, replay_name)
-            if os.path.isdir(r_dir) and os.path.exists(os.path.join(r_dir, "replay_certificate.json")):
+            if os.path.isdir(r_dir) and os.path.exists(
+                os.path.join(r_dir, "replay_certificate.json")
+            ):
                 cert_dirs.append(r_dir)
 
     if not cert_dirs:

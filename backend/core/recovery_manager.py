@@ -24,12 +24,14 @@ class RecoveryManager:
 
         self.validator = ReplayValidator(str(self.artifacts_dir), str(self.metrics_dir))
 
-    def _generate_report(self, status: str, details: str, recovered_from: Optional[str] = None) -> None:
+    def _generate_report(
+        self, status: str, details: str, recovered_from: Optional[str] = None
+    ) -> None:
         """Publishes an operational report of the recovery action."""
         report = {
             "status": status,
             "details": details,
-            "recovered_from": recovered_from
+            "recovered_from": recovered_from,
         }
         report_path = self.artifacts_dir / "recovery_report.json"
         with open(report_path, "w", encoding="utf-8") as f:
@@ -56,7 +58,14 @@ class RecoveryManager:
         if not self.archive_dir.exists():
             return False
 
-        replays = sorted([d for d in self.archive_dir.iterdir() if d.is_dir() and d.name.startswith("replay_")], reverse=True)
+        replays = sorted(
+            [
+                d
+                for d in self.archive_dir.iterdir()
+                if d.is_dir() and d.name.startswith("replay_")
+            ],
+            reverse=True,
+        )
         for replay in replays:
             if self.validator.validate_certificate(str(replay)):
                 # Found a valid replay, restore it
@@ -69,14 +78,16 @@ class RecoveryManager:
 
     def recover(self) -> bool:
         """
-        Observes filesystem state, cleans up incomplete generations, 
+        Observes filesystem state, cleans up incomplete generations,
         and validates/recovers current state.
         Returns True if the system is in a healthy state (or successfully recovered).
         """
         # 1. Cleanup staging
         if self.staging_dir.exists():
             if any(self.staging_dir.iterdir()):
-                self._quarantine(self.staging_dir, "Incomplete generation (left in staging)")
+                self._quarantine(
+                    self.staging_dir, "Incomplete generation (left in staging)"
+                )
             if self.staging_dir.exists():
                 shutil.rmtree(self.staging_dir)
 
@@ -84,10 +95,16 @@ class RecoveryManager:
         if not self.current_dir.exists() or not any(self.current_dir.iterdir()):
             recovered = self._recover_from_archive()
             if recovered:
-                self._generate_report("RECOVERED", "Current dir was empty, recovered from archive.", "archive")
+                self._generate_report(
+                    "RECOVERED",
+                    "Current dir was empty, recovered from archive.",
+                    "archive",
+                )
                 return True
             else:
-                self._generate_report("FAILED", "Current dir empty and no valid archives found.")
+                self._generate_report(
+                    "FAILED", "Current dir empty and no valid archives found."
+                )
                 return False
 
         # 3. Validate current artifacts
@@ -101,8 +118,14 @@ class RecoveryManager:
 
             recovered = self._recover_from_archive()
             if recovered:
-                self._generate_report("RECOVERED", "Current artifacts corrupted, recovered from archive.", "archive")
+                self._generate_report(
+                    "RECOVERED",
+                    "Current artifacts corrupted, recovered from archive.",
+                    "archive",
+                )
                 return True
             else:
-                self._generate_report("FAILED", "Current artifacts corrupted and no valid archives found.")
+                self._generate_report(
+                    "FAILED", "Current artifacts corrupted and no valid archives found."
+                )
                 return False

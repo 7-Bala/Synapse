@@ -1,0 +1,85 @@
+{
+  "repository": {
+    "commit": "7d445521c299332d4223c02ae9ce4fb7740a8902",
+    "tag": "phase3-retry-policy",
+    "branch": "feature/circuit-breaker",
+    "is_dirty": "True"
+  },
+  "prompt_bundle_summary": {
+    "total_prompts": 8,
+    "hash": "99f520f607f52e04aab8e066ca4d060224dcc1a115494ad6ab6508644d8ac1c0"
+  },
+  "specialists": {
+    "SourceAgent": {
+      "name": "SourceAgent",
+      "version": "1.0",
+      "implementation_version": "1.0",
+      "prompt_version": "v1",
+      "schema_version": "1.0"
+    },
+    "VisionAgent": {
+      "name": "VisionAgent",
+      "version": "1.0",
+      "implementation_version": "1.0",
+      "prompt_version": "v1",
+      "schema_version": "1.0"
+    },
+    "TimelineAgent": {
+      "name": "TimelineAgent",
+      "version": "1.0",
+      "implementation_version": "1.0",
+      "prompt_version": "v1",
+      "schema_version": "1.0"
+    },
+    "ContradictionAgent": {
+      "name": "ContradictionAgent",
+      "version": "1.0",
+      "implementation_version": "1.0",
+      "prompt_version": "v1",
+      "schema_version": "1.0"
+    },
+    "PredictionAgent": {
+      "name": "PredictionAgent",
+      "version": "1.0",
+      "implementation_version": "1.0",
+      "prompt_version": "v1",
+      "schema_version": "1.0"
+    },
+    "ConsensusAgent": {
+      "name": "ConsensusAgent",
+      "version": "1.0",
+      "implementation_version": "1.0",
+      "prompt_version": "v1",
+      "schema_version": "1.0"
+    }
+  },
+  "configuration": {
+    "schema_version": "1.0",
+    "replay_version": "1.0",
+    "model_identifier": "llama3.1-8b",
+    "cache_provider": "FilesystemCacheProvider",
+    "registry_version": "1.0",
+    "settings_version": "1.0"
+  },
+  "runtime": {
+    "python_version": "3.13.5",
+    "platform": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+    "hostname": "Balas-MacBook-Air.local",
+    "generation_timestamp": "2026-06-29T05:25:01.995386Z"
+  },
+  "generation_duration_seconds": 1.05,
+  "validation_results": {
+    "status": "SUCCESS"
+  },
+  "artifact_hashes": {
+    "events_json": "c799ca4a6c2d8bf97779bdb95c8127d9af93a800dcaf8d31a6f197dabedbdd4c",
+    "metrics_json": "c6f8b09e8d9d350e637af8463ccde4fb3fdfc00c16cd1866f543bf2e471e08bd",
+    "prompt_bundle_json": "99f520f607f52e04aab8e066ca4d060224dcc1a115494ad6ab6508644d8ac1c0"
+  },
+  "cache_statistics": {
+    "total_lookups": 5,
+    "hits": 0,
+    "misses": 5
+  },
+  "replay_identifier": "479638b68d0c31205b5e0e4afdb9c44540c03a1c5a441ddea4ace9d25042342f"
+}

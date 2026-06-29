@@ -5,6 +5,8 @@ import random
 from typing import Type, Tuple, Callable, Any
 import httpx
 
+from core.circuit_breaker import CircuitBreakerOpenException
+
 from config.settings import settings
 from observability.event_bus import EventBus
 from observability.events import (
@@ -12,11 +14,13 @@ from observability.events import (
     RetryAttempt,
     RetrySucceeded,
     RetryFailedTerminal,
-    RetryExhausted
+    RetryExhausted,
 )
+
 
 class RetryTimeoutException(Exception):
     """Raised when an operation exceeds its configured timeout."""
+
     pass
 
 
@@ -55,36 +59,40 @@ class RetryPolicy:
 
     def calculate_delay(self, attempt: int) -> float:
         """Calculates exponential backoff with optional jitter."""
-        delay = min(self.base_delay * (2 ** attempt), self.max_delay)
+        delay = min(self.base_delay * (2**attempt), self.max_delay)
         if self.jitter_enabled:
             delay += random.uniform(0, 0.1 * delay)  # 10% jitter
         return delay
 
-    def _emit_event(self, event_type: str, request_id: str, attempt: int, **kwargs: Any) -> None:
+    def _emit_event(
+        self, event_type: str, request_id: str, attempt: int, **kwargs: Any
+    ) -> None:
         """Emits telemetry to the EventBus."""
         base_kwargs = {
             "correlation_id": request_id,
             "attempt": attempt,
-            "specialist": "Infrastructure"
+            "specialist": "Infrastructure",
         }
         base_kwargs.update(kwargs)
 
         if event_type == "retry_started":
-            event = RetryStarted(**base_kwargs)
+            event = RetryStarted(**base_kwargs)  # type: ignore
         elif event_type == "retry_attempt":
-            event = RetryAttempt(**base_kwargs)
+            event = RetryAttempt(**base_kwargs)  # type: ignore
         elif event_type == "retry_succeeded":
-            event = RetrySucceeded(**base_kwargs)
+            event = RetrySucceeded(**base_kwargs)  # type: ignore
         elif event_type == "retry_failed_terminal":
-            event = RetryFailedTerminal(**base_kwargs)
+            event = RetryFailedTerminal(**base_kwargs)  # type: ignore
         elif event_type == "retry_exhausted":
-            event = RetryExhausted(**base_kwargs)
+            event = RetryExhausted(**base_kwargs)  # type: ignore
         else:
             raise ValueError(f"Unknown retry event type: {event_type}")
 
-        self.event_bus.publish(event)
+        self.event_bus.emit(event)
 
-    def execute(self, request_id: str, operation: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
+    def execute(
+        self, request_id: str, operation: Callable[..., Any], *args: Any, **kwargs: Any
+    ) -> Any:
         """Executes the operation with retry and telemetry logic."""
         attempt = 0
         self._emit_event("retry_started", request_id, attempt)
@@ -97,7 +105,9 @@ class RetryPolicy:
 
                 duration_ms = (time.time() - attempt_start) * 1000
                 if attempt > 0:
-                    self._emit_event("retry_succeeded", request_id, attempt, duration_ms=duration_ms)
+                    self._emit_event(
+                        "retry_succeeded", request_id, attempt, duration_ms=duration_ms
+                    )
 
                 return result
 
@@ -106,6 +116,18 @@ class RetryPolicy:
                 duration_ms = (time.time() - attempt_start) * 1000
                 if not self._handle_failure(request_id, attempt, exc, duration_ms):
                     raise exc
+
+            except CircuitBreakerOpenException as cboe:
+                # Never retry if the circuit breaker is open.
+                duration_ms = (time.time() - attempt_start) * 1000
+                self._emit_event(
+                    "retry_failed_terminal",
+                    request_id,
+                    attempt,
+                    duration_ms=duration_ms,
+                    error=str(cboe),
+                )
+                raise cboe
 
             except Exception as e:
                 duration_ms = (time.time() - attempt_start) * 1000
@@ -116,16 +138,37 @@ class RetryPolicy:
             time.sleep(delay)
             attempt += 1
 
-    def _handle_failure(self, request_id: str, attempt: int, exception: Exception, duration_ms: float) -> bool:
+    def _handle_failure(
+        self, request_id: str, attempt: int, exception: Exception, duration_ms: float
+    ) -> bool:
         """Evaluates whether to retry or raise the exception. Returns True if we should retry, False to raise."""
         if not self.is_retryable(exception):
-            self._emit_event("retry_failed_terminal", request_id, attempt, duration_ms=duration_ms, error=str(exception))
+            self._emit_event(
+                "retry_failed_terminal",
+                request_id,
+                attempt,
+                duration_ms=duration_ms,
+                error=str(exception),
+            )
             return False
 
         if attempt >= self.max_attempts:
-            self._emit_event("retry_exhausted", request_id, attempt, duration_ms=duration_ms, error=str(exception))
+            self._emit_event(
+                "retry_exhausted",
+                request_id,
+                attempt,
+                duration_ms=duration_ms,
+                error=str(exception),
+            )
             return False
 
         delay = self.calculate_delay(attempt)
-        self._emit_event("retry_attempt", request_id, attempt, duration_ms=duration_ms, error=str(exception), delay_ms=delay * 1000)
+        self._emit_event(
+            "retry_attempt",
+            request_id,
+            attempt,
+            duration_ms=duration_ms,
+            error=str(exception),
+            delay_ms=delay * 1000,
+        )
         return True

@@ -92,3 +92,29 @@ class RetryExhausted(BaseEvent):
     attempt: int
     error: str
     duration_ms: float
+
+
+class CircuitOpened(BaseEvent):
+    dependency: str
+    reason: str
+
+
+class CircuitClosed(BaseEvent):
+    dependency: str
+
+
+class CircuitHalfOpen(BaseEvent):
+    dependency: str
+
+
+class CircuitRejected(BaseEvent):
+    dependency: str
+
+
+class CircuitFailure(BaseEvent):
+    dependency: str
+    error: str
+
+
+class CircuitRecovered(BaseEvent):
+    dependency: str

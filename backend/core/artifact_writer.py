@@ -5,7 +5,9 @@ import json
 import os
 import shutil
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
+
+from core.circuit_breaker import CircuitBreaker
 
 
 class TransactionalArtifactWriter:
@@ -21,6 +23,8 @@ class TransactionalArtifactWriter:
         self.artifacts_dir.mkdir(parents=True, exist_ok=True)
         self.current_dir.mkdir(parents=True, exist_ok=True)
         self.archive_dir.mkdir(parents=True, exist_ok=True)
+
+        self._circuit_breaker = CircuitBreaker("ArtifactWriter")
 
         self._ensure_clean_staging()
 
@@ -78,13 +82,15 @@ class TransactionalArtifactWriter:
             "manifest.json",
             "metrics.json",
             "prompt_bundle.json",
-            "replay_certificate.json"
+            "replay_certificate.json",
         ]
 
         for file in required_files:
             if not (self.staging_dir / file).exists():
                 self.rollback()
-                raise FileNotFoundError(f"Validation failed: missing required artifact {file}")
+                raise FileNotFoundError(
+                    f"Validation failed: missing required artifact {file}"
+                )
 
         # Archive the existing current artifacts
         self._archive_current()
@@ -99,3 +105,22 @@ class TransactionalArtifactWriter:
         """Discards the staging directory."""
         if self.staging_dir.exists():
             shutil.rmtree(self.staging_dir)
+
+    def execute_transaction(
+        self, block: Callable[["TransactionalArtifactWriter"], None]
+    ) -> None:
+        """
+        Executes a block of operations as a single transaction protected by the Circuit Breaker.
+        Provides the writer instance to the block for writing files.
+        """
+
+        def _transaction_impl() -> None:
+            self._ensure_clean_staging()
+            try:
+                block(self)
+                self.commit()
+            except Exception as e:
+                self.rollback()
+                raise e
+
+        self._circuit_breaker.execute(_transaction_impl)

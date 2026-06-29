@@ -92,9 +92,13 @@ class EvidencePlayer:
             # 1. Parse and build evidence
             evidences = []
             for idx, ev_data in enumerate(tick_data.get("evidence", [])):
-                deterministic_id = uuid5(NAMESPACE_DNS, f"synapse_{cycle_id}_{idx}_{ev_data['content']}")
+                deterministic_id = uuid5(
+                    NAMESPACE_DNS, f"synapse_{cycle_id}_{idx}_{ev_data['content']}"
+                )
                 ev = Evidence(
-                    id=deterministic_id, content=ev_data["content"], source=ev_data["source"]
+                    id=deterministic_id,
+                    content=ev_data["content"],
+                    source=ev_data["source"],
                 )
                 evidences.append(ev)
 
