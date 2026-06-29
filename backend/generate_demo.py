@@ -10,6 +10,7 @@ from typing import Dict, Any
 from core.orchestrator import Orchestrator
 from core.pipeline_state import PipelineState
 from core.provenance import ProvenanceEngine
+from core.artifact_writer import TransactionalArtifactWriter
 from demo.evidence_player import EvidencePlayer, RecordingAgentWrapper
 from demo.recorder import DemoRecorder
 from registry.registry import SpecialistRegistry
@@ -89,40 +90,31 @@ async def main() -> None:
 
     duration = time.time() - start_time
 
-    # 2. Setup output directories and version
-    os.makedirs(artifacts_dir, exist_ok=True)
-    os.makedirs(metrics_dir, exist_ok=True)
+    # 2. Setup output directories
+    # os.makedirs(artifacts_dir, exist_ok=True)
+    # os.makedirs(metrics_dir, exist_ok=True)
 
-    version = get_next_version(artifacts_dir, "events_supply_chain")
-    replay_version = f"v{version}"
+    # Initialize the Transactional Writer
+    writer = TransactionalArtifactWriter(artifacts_dir)
 
     # 3. Collect Leaf Artifacts Content
-    events_path = os.path.join(
-        artifacts_dir, f"events_supply_chain_{replay_version}.json"
-    )
-    prompt_bundle_path = os.path.join(
-        artifacts_dir, f"prompt_bundle_{replay_version}.json"
-    )
+    # We no longer rely on dynamic version strings for the output files in artifacts
 
-    recorder.export_timeline(events_path)
-    with open(events_path, "r", encoding="utf-8") as f:
+    # Events
+    temp_events_path = os.path.join(metrics_dir, "temp_events.json")
+    recorder.export_timeline(temp_events_path)
+    with open(temp_events_path, "r", encoding="utf-8") as f:
         events_content = f.read()
+    events_hash = writer.write_text("events.json", events_content)
 
-    metrics_path = os.path.join(metrics_dir, f"metrics_report_{replay_version}.json")
-    with open(metrics_path, "w", encoding="utf-8") as f:
-        json.dump(metrics_collector.metrics, f, indent=2)
-    with open(metrics_path, "r", encoding="utf-8") as f:
-        metrics_content = f.read()
+    # Metrics
+    metrics_hash = writer.write_json("metrics.json", metrics_collector.metrics)
 
+    # Prompt Bundle
     prompt_bundle = prompt_loader.get_all_metadata()
-    prompt_bundle_content = json.dumps(prompt_bundle, indent=2)
-    with open(prompt_bundle_path, "w") as f:
-        f.write(prompt_bundle_content)
+    prompt_bundle_hash = writer.write_json("prompt_bundle.json", prompt_bundle)
 
-    # 4. Calculate Leaf Hashes
-    events_hash = sha256_content(events_content)
-    metrics_hash = sha256_content(metrics_content)
-    prompt_bundle_hash = sha256_content(prompt_bundle_content)
+    # Hashes already computed via the writer
 
     # 5. Generate Manifest
     manifest: Dict[str, Any] = {
@@ -153,7 +145,7 @@ async def main() -> None:
     manifest_for_hash = manifest.copy()
     manifest_for_hash["runtime"] = {"isolated": True}
     manifest_for_hash["generation_duration_seconds"] = 0.0
-    
+
     # Also isolate metrics hash because it fluctuates with execution timing
     artifact_hashes_copy = manifest_for_hash["artifact_hashes"].copy()
     artifact_hashes_copy["metrics_json"] = "PENDING"
@@ -172,9 +164,7 @@ async def main() -> None:
     manifest_hash = sha256_content(manifest_content)
 
     # 7. Write Manifest
-    manifest_path = os.path.join(artifacts_dir, f"manifest_{replay_version}.json")
-    with open(manifest_path, "w") as f:
-        f.write(manifest_content)
+    writer.write_text("manifest.json", manifest_content)
 
     # 8. Generate Certificate
     certificate = {
@@ -188,19 +178,20 @@ async def main() -> None:
         "validation_passed": True,
     }
 
-    cert_path = os.path.join(artifacts_dir, f"replay_certificate_{replay_version}.json")
-    with open(cert_path, "w") as f:
-        json.dump(certificate, f, indent=2)
+    writer.write_json("replay_certificate.json", certificate)
+
+    # Finalize the transaction
+    writer.commit()
 
     # 9. Update frontend (legacy compatibility)
     frontend_events_path = os.path.join(base_dir, "frontend", "public", "events.json")
     with open(frontend_events_path, "w") as f:
         f.write(events_content)
 
-    print(f"\nSuccessfully generated versioned replay: {events_path}")
+    print(f"\nSuccessfully generated transactional replay in {artifacts_dir}/current")
     print(f"Total exported events: {len(recorder.events)}")
     print(f"Replay ID: {replay_id}")
-    print(f"Manifest and Certificate created in {artifacts_dir}\n")
+    print("Manifest and Certificate created securely.\n")
 
 
 if __name__ == "__main__":

@@ -43,12 +43,12 @@ def main():
         sys.exit(0)
 
     os.makedirs(golden_dir, exist_ok=True)
-    
+
     shutil.copy2(events_path, os.path.join(golden_dir, "expected_events.json"))
     shutil.copy2(manifest_path, os.path.join(golden_dir, "expected_manifest.json"))
     shutil.copy2(prompt_bundle_path, os.path.join(golden_dir, "expected_prompt_bundle.json"))
     shutil.copy2(metrics_path, os.path.join(golden_dir, "expected_metrics.json"))
-    
+
     # Extract decision and trace from events
     import json
     with open(events_path, "r", encoding="utf-8") as f:
@@ -58,16 +58,16 @@ def main():
                 decision_output = event.get("output", {})
                 with open(os.path.join(golden_dir, "expected_decision.json"), "w", encoding="utf-8") as out:
                     json.dump(decision_output, out, indent=2)
-                
+
                 decision_trace = decision_output.get("decision_trace", {})
                 with open(os.path.join(golden_dir, "expected_trace.json"), "w", encoding="utf-8") as out:
                     json.dump(decision_trace, out, indent=2)
-                    
+
     print("SUCCESS: Golden dataset updated.")
 
     with open(os.path.join(backend_dir, "golden_update_report.md"), "w") as f:
         f.write("# Golden Dataset Update Report\n")
         f.write("Baseline updated successfully via --approve.\n")
-        
+
 if __name__ == "__main__":
     main()

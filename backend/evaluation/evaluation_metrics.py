@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Dict, Any, List
+from typing import Dict, Any
 
 class EvaluationMetrics:
     def __init__(self, output_dir: str):
@@ -31,14 +31,14 @@ class EvaluationMetrics:
     def export(self, filename: str = "evaluation_report.json") -> str:
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir, exist_ok=True)
-            
+
         file_path = os.path.join(self.output_dir, filename)
-        
+
         # Calculate pass rate based on failures
         if self.metrics["failures"]:
             self.metrics["pass_rate"] = 0.0
-            
+
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump(self.metrics, f, indent=2)
-            
+
         return file_path

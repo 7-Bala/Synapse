@@ -3,7 +3,7 @@
 import asyncio
 import json
 from typing import Any, Dict
-from uuid import uuid4, uuid5, NAMESPACE_DNS
+from uuid import uuid5, NAMESPACE_DNS
 
 from agents.base import BaseAgent
 from core.orchestrator import Orchestrator

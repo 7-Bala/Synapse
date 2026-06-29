@@ -32,9 +32,9 @@ class ReplayValidator:
             return False
         return True
 
-    def validate_certificate(self, cert_filename: str) -> bool:
+    def validate_certificate(self, cert_dir: str) -> bool:
         """Validates a specific certificate and its entire dependency tree."""
-        cert_path = os.path.join(self.artifacts_dir, cert_filename)
+        cert_path = os.path.join(cert_dir, "replay_certificate.json")
         if not os.path.exists(cert_path):
             print(f"ERROR: Certificate not found: {cert_path}")
             return False
@@ -43,9 +43,7 @@ class ReplayValidator:
             cert = json.load(f)
 
         # 1. Verify Manifest
-        version = cert_filename.split("_")[-1].replace(".json", "")
-        manifest_filename = f"manifest_{version}.json"
-        manifest_path = os.path.join(self.artifacts_dir, manifest_filename)
+        manifest_path = os.path.join(cert_dir, "manifest.json")
 
         if not os.path.exists(manifest_path):
             print(f"ERROR: Manifest missing for certificate: {manifest_path}")
@@ -63,30 +61,27 @@ class ReplayValidator:
         expected_hashes = manifest.get("artifact_hashes", {})
 
         # Verify Events
-        events_filename = f"events_supply_chain_{version}.json"
         if not self._verify_leaf_hash(
-            events_filename,
-            self.artifacts_dir,
+            "events.json",
+            cert_dir,
             expected_hashes.get("events_json"),
             "Events",
         ):
             return False
 
         # Verify Metrics
-        metrics_filename = f"metrics_report_{version}.json"
         if not self._verify_leaf_hash(
-            metrics_filename,
-            self.metrics_dir,
+            "metrics.json",
+            cert_dir,
             expected_hashes.get("metrics_json"),
             "Metrics",
         ):
             return False
 
         # Verify Prompt Bundle
-        prompt_bundle_filename = f"prompt_bundle_{version}.json"
         if not self._verify_leaf_hash(
-            prompt_bundle_filename,
-            self.artifacts_dir,
+            "prompt_bundle.json",
+            cert_dir,
             expected_hashes.get("prompt_bundle_json"),
             "Prompt bundle",
         ):
@@ -99,17 +94,17 @@ class ReplayValidator:
         manifest_copy["replay_identifier"] = "PENDING"
         manifest_copy["runtime"] = {"isolated": True}
         manifest_copy["generation_duration_seconds"] = 0.0
-        
+
         artifact_hashes_copy = manifest_copy.get("artifact_hashes", {}).copy()
         if "metrics_json" in artifact_hashes_copy:
             artifact_hashes_copy["metrics_json"] = "PENDING"
             manifest_copy["artifact_hashes"] = artifact_hashes_copy
-        
+
         intermediate_manifest_hash = hashlib.sha256(json.dumps(manifest_copy, indent=2).encode("utf-8")).hexdigest()
-        
-        computed_events_hash = sha256_file(os.path.join(self.artifacts_dir, events_filename))
-        computed_prompt_hash = sha256_file(os.path.join(self.artifacts_dir, prompt_bundle_filename))
-        
+
+        computed_events_hash = sha256_file(os.path.join(cert_dir, "events.json"))
+        computed_prompt_hash = sha256_file(os.path.join(cert_dir, "prompt_bundle.json"))
+
         replay_id_str = f"{computed_events_hash}{intermediate_manifest_hash}{computed_prompt_hash}"
         computed_replay_id = hashlib.sha256(replay_id_str.encode("utf-8")).hexdigest()
 
@@ -121,7 +116,7 @@ class ReplayValidator:
             print("ERROR: Replay ID mismatch in certificate.")
             return False
 
-        print(f"SUCCESS: Provenance tree validated for {version}")
+        print(f"SUCCESS: Provenance tree validated for {cert_dir}")
         print(f"Validated Replay ID: {computed_replay_id}")
         return True
 
@@ -136,15 +131,27 @@ if __name__ == "__main__":
         exit(0)
 
     validator = ReplayValidator(artifacts_dir, metrics_dir)
-    certs = [f for f in os.listdir(artifacts_dir) if f.startswith("replay_certificate")]
 
-    if not certs:
+    # Collect all certificate directories (current + archive/*)
+    cert_dirs = []
+    current_dir = os.path.join(artifacts_dir, "current")
+    if os.path.exists(os.path.join(current_dir, "replay_certificate.json")):
+        cert_dirs.append(current_dir)
+
+    archive_dir = os.path.join(artifacts_dir, "archive")
+    if os.path.exists(archive_dir):
+        for replay_name in os.listdir(archive_dir):
+            r_dir = os.path.join(archive_dir, replay_name)
+            if os.path.isdir(r_dir) and os.path.exists(os.path.join(r_dir, "replay_certificate.json")):
+                cert_dirs.append(r_dir)
+
+    if not cert_dirs:
         print("No certificates found to validate.")
         exit(0)
 
     success = True
-    for cert in certs:
-        if not validator.validate_certificate(cert):
+    for c_dir in cert_dirs:
+        if not validator.validate_certificate(c_dir):
             success = False
 
     if not success:
