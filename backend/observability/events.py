@@ -343,3 +343,37 @@ class EvidenceAdded(BaseEvent):
 class EvidenceResolved(BaseEvent):
     evidence_id: str
 
+
+# --- Planner Events ---
+
+class PlannerStarted(BaseEvent):
+    tick_id: int
+
+class PlannerFinished(BaseEvent):
+    tick_id: int
+    plan: str
+
+
+# --- Tool Call Events (Explicit Names) ---
+
+class ToolInvoked(BaseEvent):
+    tool_name: str
+    arguments: Optional[str] = None
+
+class ToolCompleted(BaseEvent):
+    tool_name: str
+    result: Optional[str] = None
+    latency_ms: int = 0
+
+
+# --- Validation Lifecycle Events ---
+
+class ValidationStarted(BaseEvent):
+    validator_id: str
+
+class ValidationCompleted(BaseEvent):
+    validator_id: str
+    status: str  # PASSED, FAILED, BLOCKED
+    error: Optional[str] = None
+
+

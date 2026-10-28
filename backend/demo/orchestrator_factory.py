@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 import asyncio
 
 from core.orchestrator import Orchestrator
@@ -18,6 +18,6 @@ class MockAgent(BaseAgent):
         return AgentOutput(agent_name="MockAgent", findings="Demo finding", confidence=0.99)
 
 
-def create_demo_orchestrator(instrumentation: EventBusInstrumentation) -> Orchestrator:
+def create_demo_orchestrator(instrumentation: EventBusInstrumentation, execution_id: Optional[str] = None) -> Orchestrator:
     """Creates a demo orchestrator populated with mock agents for testing the transport layer."""
-    return Orchestrator(agents=[MockAgent()], callbacks=instrumentation)
+    return Orchestrator(agents=[MockAgent()], callbacks=instrumentation, execution_id=execution_id)

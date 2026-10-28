@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .lifespan import lifespan
-from .routers import websocket, demo
+from .routers import websocket, demo, executions_api, mission_control_api
 
 app = FastAPI(title="Synapse Mission Control API", lifespan=lifespan)
 
@@ -22,6 +22,8 @@ async def health_check():
 
 app.include_router(websocket.router)
 app.include_router(demo.router)
+app.include_router(executions_api.router)
+app.include_router(mission_control_api.router)
 
 if __name__ == "__main__":
     import uvicorn

@@ -6,7 +6,7 @@ import { AlertCircle, WifiOff, Inbox, Activity } from 'lucide-react';
 import { useExecutionStore } from '@/stores/executionStore';
 import { cn } from '@/lib/utils';
 
-export type WorkspaceState = 'loading' | 'empty' | 'disconnected' | 'error' | 'ready';
+export type WorkspaceState = 'loading' | 'empty' | 'idle' | 'disconnected' | 'error' | 'ready';
 
 interface WorkspaceLayoutProps {
   title: string;
@@ -27,7 +27,7 @@ export function WorkspaceLayout({
   children,
   errorMessage = 'An error occurred while loading this workspace.',
   emptyMessage = 'No data available in this workspace.',
-  sprintStatus = 'Sprint 5.5',
+  sprintStatus = 'Sprint 6.0',
 }: WorkspaceLayoutProps) {
   const { connectionStatus, executionStatus } = useExecutionStore();
 
@@ -40,6 +40,8 @@ export function WorkspaceLayout({
             <p className="text-sm font-medium text-foreground tracking-tight">Loading workspace...</p>
           </div>
         );
+      case 'idle':
+        return children;
       case 'disconnected':
         return (
           <div className="flex flex-col items-center justify-center h-full text-muted">
@@ -79,13 +81,16 @@ export function WorkspaceLayout({
               <span className={cn(
                 "relative flex size-1.5 rounded-full",
                 connectionStatus === 'connected' ? 'bg-success' :
-                connectionStatus === 'connecting' ? 'bg-warning animate-pulse' : 'bg-danger'
+                connectionStatus === 'connecting' ? 'bg-warning animate-pulse' : 'bg-muted-foreground/40'
               )}>
                 {connectionStatus === 'connected' && (
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
                 )}
               </span>
-              <span className="text-muted">{connectionStatus}</span>
+              <span className="text-muted">
+                {connectionStatus === 'connected' ? 'READY' :
+                 connectionStatus === 'connecting' ? 'CONNECTING' : 'IDLE'}
+              </span>
             </div>
             {connectionStatus === 'connected' && (
               <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-border-subtle bg-surface text-2xs font-mono uppercase tracking-widest">

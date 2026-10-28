@@ -18,13 +18,14 @@ from core.orchestrator_callbacks import OrchestratorCallbacks
 class Orchestrator:
     """Manages the execution lifecycle for the Synapse backend."""
 
-    def __init__(self, agents: List[BaseAgent], timeout_seconds: float = 5.0, callbacks: Optional[OrchestratorCallbacks] = None):
+    def __init__(self, agents: List[BaseAgent], timeout_seconds: float = 5.0, callbacks: Optional[OrchestratorCallbacks] = None, execution_id: Optional[str] = None):
         """Initializes the Orchestrator.
 
         Args:
             agents: A list of agents to run during each tick.
             timeout_seconds: Maximum time allowed for agents to complete their tick.
             callbacks: Lifecycle hooks for instrumentation/observability.
+            execution_id: Optional preset execution ID.
         """
         self._agents = agents
         self._timeout_seconds = timeout_seconds
@@ -32,7 +33,7 @@ class Orchestrator:
         self._previous_consensus: Optional[ConsensusOutput] = None
         self._callbacks = callbacks or OrchestratorCallbacks()
 
-        self.execution_id = str(uuid.uuid4())
+        self.execution_id = execution_id or str(uuid.uuid4())
         # Start ticks at 1
         self._current_tick_id = 1
         
